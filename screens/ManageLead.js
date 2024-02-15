@@ -10,10 +10,13 @@ import {
   insertLeadData,
   updateLeadData,
   deleteLeadData,
+  unUploadedleadsFetch,
 } from '../database/leadsData';
+import { UploadLeadsContext } from '../store/upload-leads-context';
 
 function ManageLead({ route, navigation }) {
   const leadsCtx = useContext(LeadsContext);
+  const uploadLeadsCtx = useContext(UploadLeadsContext);
 
   const editedLeadId = route.params?.leadId;
   const isEditing = !!editedLeadId; // '!!' converts to boolean
@@ -55,7 +58,7 @@ function ManageLead({ route, navigation }) {
     // // delete to database
     // await deleteLeadData(editedLeadId);
 
-    // navigation.goBack() 
+    // navigation.goBack()
   }
 
   function cancelHandler() {
@@ -70,8 +73,10 @@ function ManageLead({ route, navigation }) {
       // update to database
       await updateLeadData(editedLeadId, leadsData);
 
-      Alert.alert("Notice:", "Successfully Updated!", [
-        { text: "OK", onPress: () => navigation.goBack() },
+      const message = result ? 'Successfully Updated!' : 'Invalid form.';
+
+      Alert.alert('Notice:', message, [
+        { text: 'OK', onPress: () => navigation.goBack() },
       ]);
     } else {
       // add to local
@@ -79,13 +84,13 @@ function ManageLead({ route, navigation }) {
 
       // add to database
       const result = await insertLeadData(leadsData);
-      // console.log("add result", result);
 
-      Alert.alert("Notice:", "Successfully Added!", [
-        { text: "OK", onPress: () => navigation.goBack() },
+      const message = result ? 'Successfully Added!' : 'Invalid form.';
+
+      Alert.alert('Notice:', message, [
+        { text: 'OK', onPress: () => navigation.goBack() },
       ]);
     }
-    // navigation.goBack();
   }
 
   return (
