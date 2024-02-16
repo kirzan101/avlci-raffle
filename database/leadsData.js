@@ -20,6 +20,7 @@ export async function initiateLead() {
     'mobile_number TEXT, ' +
     'occupation TEXT, ' +
     'age INT, ' +
+    'source_prefix TEXT, ' +
     'source TEXT, ' +
     'civil_status TEXT, ' +
     'created_at TEXT,' +
@@ -93,12 +94,13 @@ export async function insertLeadData(request) {
           'mobile_number, ' +
           'occupation, ' +
           'age, ' +
+          'source_prefix, ' +
           'source, ' +
           'civil_status, ' +
           'is_uploaded, ' +
           'created_at' +
           ') ' +
-          'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+          'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
         [
           request.first_name,
           request.middle_name,
@@ -111,6 +113,7 @@ export async function insertLeadData(request) {
           request.mobile_number,
           request.occupation,
           request.age,
+          request.source_prefix,
           request.source,
           request.civil_status,
           request.is_uploaded,
@@ -142,6 +145,7 @@ export async function updateLeadData(id, request) {
           'mobile_number = ?, ' +
           'occupation = ?, ' +
           'age = ?, ' +
+          'source_prefix = ?, ' +
           'source = ?, ' +
           'civil_status = ?, ' +
           'is_uploaded = ? ' +
@@ -158,6 +162,7 @@ export async function updateLeadData(id, request) {
           request.mobile_number,
           request.occupation,
           request.age,
+          request.source_prefix,
           request.source,
           request.civil_status,
           request.is_uploaded,

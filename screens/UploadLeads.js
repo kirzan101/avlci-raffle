@@ -27,25 +27,6 @@ function UploadLeads() {
 
   async function uploadLeadsHandler() {
     setModalVisible(true);
-    // Alert.alert('Notice:', 'Upload all the leads?', [
-    //   {
-    //     text: 'Cancel',
-    //     onPress: () => console.log('Cancel Pressed'),
-    //     style: 'cancel',
-    //   },
-    //   {
-    //     text: 'OK',
-    //     onPress: async () => {
-    //       const leads = await unUploadedleadsFetch();
-    //       // send online
-    //       const result = await storeBulkLead(leads);
-    //       if (result.status == 200) {
-    //         // update is_upload status
-    //         await uploadLead();
-    //       }
-    //     },
-    //   },
-    // ]);
   }
 
   function closeModalHandle(callback) {
@@ -56,8 +37,10 @@ function UploadLeads() {
     if (callback) {
       const leads = await unUploadedleadsFetch();
       const result = await storeBulkLead(leads);
+
+      setModalVisible(false);
+      
       if (result.status == 200) {
-        
         //upload leads
         await uploadLead();
 
@@ -75,7 +58,9 @@ function UploadLeads() {
     }
   }
 
-  const unuploadedLeadCount = leadsCtx.leads.filter(lead => lead.is_uploaded == "false").length;
+  const unuploadedLeadCount = leadsCtx.leads.filter(
+    (lead) => lead.is_uploaded == 'false'
+  ).length;
 
   return (
     <View style={styles.container}>
@@ -89,7 +74,9 @@ function UploadLeads() {
         style={styles.image}
         source={require('../assets/images/undraw_upload.png')}
       />
-      <Text style={styles.infoText}>For Upload Leads: {unuploadedLeadCount}</Text>
+      <Text style={styles.infoText}>
+        For Upload Leads: {unuploadedLeadCount}
+      </Text>
       <Button style={styles.button} onPress={uploadLeadsHandler}>
         Click to upload
       </Button>

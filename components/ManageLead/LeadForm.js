@@ -65,6 +65,10 @@ function LeadForm({ submitButtonLabel, onCancel, onSubmit, defaultValues }) {
       value: defaultValues ? defaultValues.age?.toString() : '',
       isValid: !!defaultValues,
     },
+    source_prefix: {
+      value: defaultValues ? defaultValues.source_prefix?.toString() : '',
+      isValid: !!defaultValues,
+    },
     source: {
       value: defaultValues ? defaultValues.source?.toString() : '',
       isValid: !!defaultValues,
@@ -92,8 +96,25 @@ function LeadForm({ submitButtonLabel, onCancel, onSubmit, defaultValues }) {
     { label: 'Widowed/Separated', value: 'Widowed/Separated' },
   ];
 
+  const source_prefixes = [
+    { label: 'LSR', value: 'LSR' },
+    { label: 'ALM', value: 'ALM' },
+    { label: 'LS', value: 'LS' },
+    { label: 'IP', value: 'IP' },
+    { label: 'PRJ', value: 'PRJ' },
+    { label: 'ROI', value: 'ROI' },
+    { label: 'NMB', value: 'NMB' },
+    { label: 'BROI', value: 'BROI' },
+    { label: 'BNMB', value: 'BNMB' },
+    { label: 'SURVEY', value: 'SURVEY' },
+  ];
+
   const getCivilStatus = (val) => {
     inputChangeHandler('civil_status', val);
+  };
+
+  const getSourcePrefix = (val) => {
+    inputChangeHandler('source_prefix', val);
   };
 
   function inputChangeHandler(inputIdentifier, enteredValue) {
@@ -120,6 +141,7 @@ function LeadForm({ submitButtonLabel, onCancel, onSubmit, defaultValues }) {
       mobile_number: inputs.mobile_number.value,
       occupation: inputs.occupation.value,
       age: inputs.age.value,
+      source_prefix: inputs.source_prefix.value,
       source: inputs.source.value,
       civil_status: inputs.civil_status.value,
       is_uploaded: 'false',
@@ -223,9 +245,10 @@ function LeadForm({ submitButtonLabel, onCancel, onSubmit, defaultValues }) {
       <Input
         label="Address"
         isInvalid={isInvalid && !inputs.address.isValid}
+        isRequired={true}
         textInputConfig={{
           keyboardType: 'default',
-          maxLength: 50,
+          maxLength: 250,
           autoCapitalize: 'words',
           onChangeText: inputChangeHandler.bind(this, 'address'),
           value: inputs.address.value,
@@ -291,6 +314,17 @@ function LeadForm({ submitButtonLabel, onCancel, onSubmit, defaultValues }) {
       />
       {isInvalid && !inputs.age.isValid && (
         <Text style={styles.errorText}>Age is required</Text>
+      )}
+      <Dropdown
+        options={source_prefixes}
+        label={'Source Prefix'}
+        isInvalid={isInvalid && !inputs.source_prefix.isValid}
+        isRequired={true}
+        dropdownVal={getSourcePrefix}
+        value={inputs.source_prefix.value}
+      />
+      {isInvalid && !inputs.source_prefix.isValid && (
+        <Text style={styles.errorText}>Source prefix is required</Text>
       )}
       <Input
         label="Source"

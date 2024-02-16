@@ -15,13 +15,6 @@ export async function storeBulkLead(leadDatas) {
     .post(link, {
       leads: JSON.stringify(leadDatas),
     })
-    // .then(function (response) {
-    //   console.log('success')
-    // })
-    // .catch(function (error) {
-    //   //   console.log('bulk error', error);
-    //   console.log('bulk error', error);
-    // });
 
     return response;
 }

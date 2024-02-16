@@ -2,9 +2,11 @@ function leadValidation(request) {
   const firstNameIsValid = request.first_name.trim().length > 0;
   const lastNameIsValid = request.last_name.trim().length > 0;
   const mobileNumberIsValid = request.mobile_number.trim().length > 0;
+  const addressIsValid = request.address.trim().length > 0;
   const occupationIsValid = request.occupation.trim().length > 0;
   const ageIsValid = !isNaN(request.age) && request.age > 0;
   const civilStatusIsValid = request.civil_status.trim().length > 0;
+  const sourcePrefixIsValid = request.source_prefix.trim().length > 0;
   const sourceIsValid = request.source.trim().length > 0;
 
   // set default data
@@ -50,6 +52,10 @@ function leadValidation(request) {
       isValid: occupationIsValid,
     },
     age: { value: request.age, isValid: ageIsValid },
+    source_prefix: {
+      value: request.source,
+      isValid: sourceIsValid,
+    },
     source: {
       value: request.source,
       isValid: sourceIsValid,
@@ -73,6 +79,7 @@ function leadValidation(request) {
     !lastNameIsValid ||
     !mobileNumberIsValid ||
     !occupationIsValid ||
+    !addressIsValid ||
     !ageIsValid ||
     !civilStatusIsValid ||
     !sourceIsValid
