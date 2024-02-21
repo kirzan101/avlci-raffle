@@ -10,7 +10,7 @@ function AllLeads() {
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [filterDate, setFilterDate] = useState('');
   const [search, setSearch] = useState('');
-  const [filteredLeads, setFilteredLeads] = useState([]);
+  const [defaultLeads, setDefaultLeads] = useState([]);
 
   useEffect(() => {
     getLeads();
@@ -19,14 +19,14 @@ function AllLeads() {
   async function getLeads() {
     const leads = await leadsFetch();
     leadsCtx.setLeads(leads);
-    setFilteredLeads(leads);
+    setDefaultLeads(leads);
   }
 
   // search filter
   const searchFilter = (val) => {
     setSearch(val);
     const results = handleFilter(filterDate, val);
-    setFilteredLeads(results);
+    leadsCtx.setLeads(results);
   };
 
   // date filter
@@ -44,7 +44,7 @@ function AllLeads() {
     setFilterDate(pickedDate);
 
     const results = handleFilter(pickedDate, search);
-    setFilteredLeads(results);
+    leadsCtx.setLeads(results);
   };
 
   function removeFilterHandler() {
@@ -57,9 +57,13 @@ function AllLeads() {
     const dateFilter = dateVal ? dateVal : '';
     const searchFilter = searchVal ? searchVal : '';
 
+    if (leadsCtx.leads.length > defaultLeads.length) {
+      getLeads();
+    }
+
     if (searchFilter.length > 0 && dateFilter.length == 0) {
       // if search has value and date has NO value
-      const newLeadsCtx = leadsCtx.leads.filter((leads) => {
+      const newLeadsCtx = defaultLeads.filter((leads) => {
         return (
           leads.first_name.includes(searchFilter) ||
           leads.last_name.includes(searchFilter)
@@ -69,16 +73,16 @@ function AllLeads() {
       return newLeadsCtx;
     } else if (searchFilter.length == 0 && dateFilter.length > 0) {
       // if search has NO value and date has value
-      const newLeadsCtx = leadsCtx.leads.filter((leads) => {
+      const newLeadsCtx = defaultLeads.filter((leads) => {
         const createdDate = getFormattedDate(new Date(leads.created_at));
 
         return createdDate == dateFilter;
       });
 
-      return newLeadsCtx;
+      return newLeadsCtx.reverse();
     } else if (searchFilter.length > 0 && dateFilter.length > 0) {
       // if search and date has value
-      const newLeadsCtx = leadsCtx.leads.filter((leads) => {
+      const newLeadsCtx = defaultLeads.filter((leads) => {
         const createdDate = getFormattedDate(new Date(leads.created_at));
 
         return (
@@ -88,11 +92,11 @@ function AllLeads() {
         );
       });
 
-      return newLeadsCtx;
+      return newLeadsCtx.reverse();
     }
 
     // return defaults
-    return leadsCtx.leads;
+    return defaultLeads.reverse();
   }
 
   const leadsPeriodText =
@@ -104,7 +108,7 @@ function AllLeads() {
   return (
     <>
       <LeadsOutput
-        leads={filteredLeads}
+        leads={leadsCtx.leads}
         leadsPeriod={leadsPeriodText}
         fallbackText="No registered leads"
         pickedDate={filterDate}

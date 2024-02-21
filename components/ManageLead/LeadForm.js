@@ -276,7 +276,7 @@ function LeadForm({ submitButtonLabel, onCancel, onSubmit, defaultValues }) {
         isInvalid={isInvalid && !inputs.mobile_number.isValid}
         isRequired={true}
         textInputConfig={{
-          keyboardType: 'default',
+          keyboardType: 'numeric',
           maxLength: 11,
           onChangeText: inputChangeHandler.bind(this, 'mobile_number'),
           value: inputs.mobile_number.value,
