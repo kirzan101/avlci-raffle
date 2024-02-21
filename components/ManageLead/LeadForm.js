@@ -229,7 +229,7 @@ function LeadForm({ submitButtonLabel, onCancel, onSubmit, defaultValues }) {
         }}
       />
       <Input
-        label="Comapanion Last Name"
+        label="Companion Last Name"
         isInvalid={isInvalid && !inputs.companion_last_name.isValid}
         textInputConfig={{
           keyboardType: 'default',
@@ -278,7 +278,6 @@ function LeadForm({ submitButtonLabel, onCancel, onSubmit, defaultValues }) {
         textInputConfig={{
           keyboardType: 'default',
           maxLength: 11,
-          autoCapitalize: 'words',
           onChangeText: inputChangeHandler.bind(this, 'mobile_number'),
           value: inputs.mobile_number.value,
         }}

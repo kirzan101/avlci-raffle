@@ -6,12 +6,14 @@ function renderLeadsItem(itemData) {
   return <LeadsItem {...itemData.item} />
 }
 
-function LeadsList({ leads }) {
+function LeadsList({ leads, onRefresh, refreshing }) {
   return (
     <FlatList
       data={leads}
       renderItem={renderLeadsItem}
       keyExtractor={(item) => item.id}
+      onRefresh={onRefresh}
+      refreshing={refreshing}
     />
   );
 }

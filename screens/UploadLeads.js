@@ -39,7 +39,7 @@ function UploadLeads() {
       const result = await storeBulkLead(leads);
 
       setModalVisible(false);
-      
+
       if (result.status == 200) {
         //upload leads
         await uploadLead();
@@ -77,9 +77,15 @@ function UploadLeads() {
       <Text style={styles.infoText}>
         For Upload Leads: {unuploadedLeadCount}
       </Text>
-      <Button style={styles.button} onPress={uploadLeadsHandler}>
-        Click to upload
-      </Button>
+      {unuploadedLeadCount > 0 && (
+        <Button
+          style={styles.button}
+          onPress={uploadLeadsHandler}
+          disabled={unuploadedLeadCount == 0 ? true : false}
+        >
+          Click to upload
+        </Button>
+      )}
     </View>
   );
 }

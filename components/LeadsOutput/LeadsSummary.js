@@ -5,7 +5,7 @@ function LeadsSummary({ leads, periodName }) {
   return (
     <View>
       <Text>{periodName}</Text>
-      {/* <Text>Leads count: {leads.length}</Text> */}
+      <Text>Total Leads: {leads.length}</Text>
     </View>
   );
 }
