@@ -77,6 +77,10 @@ function LeadForm({ submitButtonLabel, onCancel, onSubmit, defaultValues }) {
       value: defaultValues ? defaultValues.civil_status?.toString() : '',
       isValid: !!defaultValues,
     },
+    remarks: {
+      value: defaultValues ? defaultValues.remarks?.toString() : '',
+      isValid: !!defaultValues,
+    },
     is_uploaded: {
       value: defaultValues ? defaultValues.is_uploaded?.toString() : '',
       isValid: !!defaultValues,
@@ -144,6 +148,7 @@ function LeadForm({ submitButtonLabel, onCancel, onSubmit, defaultValues }) {
       source_prefix: inputs.source_prefix.value,
       source: inputs.source.value,
       civil_status: inputs.civil_status.value,
+      remarks: inputs.remarks.value,
       is_uploaded: 'false',
       created_at: today,
     };
@@ -351,6 +356,16 @@ function LeadForm({ submitButtonLabel, onCancel, onSubmit, defaultValues }) {
       {isInvalid && !inputs.civil_status.isValid && (
         <Text style={styles.errorText}>Civil Status is required</Text>
       )}
+      <Input
+        label="Remarks"
+        isInvalid={isInvalid && !inputs.remarks.isValid}
+        isRequired={false}
+        textInputConfig={{
+          multiline: true,
+          onChangeText: inputChangeHandler.bind(this, 'remarks'),
+          value: inputs.remarks.value,
+        }}
+      />
       <View style={styles.buttons}>
         <Button style={styles.button} onPress={submitHandler}>
           {submitButtonLabel}

@@ -10,10 +10,13 @@ import { StyleSheet, Text, View, Image, Pressable, Alert } from 'react-native';
 import Button from '../components/UI/Button';
 import { storeBulkLead, getLead, fetchLead } from '../util/http';
 import ConfirmationModal from '../components/UI/ConfirmationModal';
+import NetInfo from '@react-native-community/netinfo';
+import { GlobalStyles } from '../constants/styles';
 
 function UploadLeads() {
   const uploadLeadsCtx = useContext(UploadLeadsContext);
   const leadsCtx = useContext(LeadsContext);
+  const [isConnected, setIsConnected] = useState(false);
 
   useEffect(() => {
     async function getLeads() {
@@ -21,7 +24,13 @@ function UploadLeads() {
       uploadLeadsCtx.setLeads(leads);
     }
 
+    const unsubscribe = NetInfo.addEventListener((state) => {
+      // console.log(state.isConnected),              ;
+      setIsConnected(state.isConnected);
+    });
+
     getLeads();
+    unsubscribe();
   }, []);
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -54,6 +63,13 @@ function UploadLeads() {
             onPress: () => setModalVisible(false),
           },
         ]);
+      } else {
+        Alert.alert('Notice:', 'Upload error!', [
+          {
+            text: 'OK',
+            onPress: () => setModalVisible(false),
+          },
+        ]);
       }
     }
   }
@@ -63,30 +79,37 @@ function UploadLeads() {
   ).length;
 
   return (
-    <View style={styles.container}>
-      <ConfirmationModal
-        openModal={modalVisible}
-        closeModal={closeModalHandle}
-        confirmModal={confirmModalHandle}
-        message={'Upload all the leads?'}
-      />
-      <Image
-        style={styles.image}
-        source={require('../assets/images/undraw_upload.png')}
-      />
-      <Text style={styles.infoText}>
-        For Upload Leads: {unuploadedLeadCount}
-      </Text>
-      {unuploadedLeadCount > 0 && (
-        <Button
-          style={styles.button}
-          onPress={uploadLeadsHandler}
-          disabled={unuploadedLeadCount == 0 ? true : false}
-        >
-          Click to upload
-        </Button>
-      )}
-    </View>
+    <>
+      <View>
+        {!isConnected && (
+          <Text style={styles.connectionStatusOffline}>Offline mode</Text>
+        )}
+      </View>
+      <View style={styles.container}>
+        <ConfirmationModal
+          openModal={modalVisible}
+          closeModal={closeModalHandle}
+          confirmModal={confirmModalHandle}
+          message={'Upload all the leads?'}
+        />
+        <Image
+          style={styles.image}
+          source={require('../assets/images/undraw_upload.png')}
+        />
+        <Text style={styles.infoText}>
+          For Upload Leads: {unuploadedLeadCount}
+        </Text>
+        {unuploadedLeadCount > 0 && isConnected && (
+          <Button
+            style={styles.button}
+            onPress={uploadLeadsHandler}
+            disabled={unuploadedLeadCount == 0 ? true : false}
+          >
+            Click to upload
+          </Button>
+        )}
+      </View>
+    </>
   );
 }
 
@@ -122,5 +145,17 @@ const styles = StyleSheet.create({
     marginHorizontal: 8,
     marginTop: 20,
     marginBottom: 50,
+  },
+  connectionStatusOnline: {
+    backgroundColor: GlobalStyles.colors.primary400,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    color: 'white',
+  },
+  connectionStatusOffline: {
+    backgroundColor: GlobalStyles.colors.error500,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    color: 'white',
   },
 });

@@ -17,6 +17,7 @@ export const LeadsContext = createContext({
     source_prefix,
     source,
     civil_status,
+    remarks,
     is_uploaded,
     created_at,
   }) => {},
@@ -39,6 +40,7 @@ export const LeadsContext = createContext({
       source_prefix,
       source,
       civil_status,
+      remarks,
       is_uploaded,
       created_at,
     }

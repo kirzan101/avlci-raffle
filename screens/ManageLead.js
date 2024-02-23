@@ -1,4 +1,4 @@
-import { useContext, useLayoutEffect } from 'react';
+import { useContext, useEffect, useLayoutEffect, useState } from 'react';
 import { Alert, ScrollView, StyleSheet, View } from 'react-native';
 
 import { GlobalStyles } from '../constants/styles';
@@ -13,10 +13,13 @@ import {
   unUploadedleadsFetch,
 } from '../database/leadsData';
 import { UploadLeadsContext } from '../store/upload-leads-context';
+import { deleteLead, storeLead, updateLead } from '../util/http';
+import NetInfo from '@react-native-community/netinfo';
 
 function ManageLead({ route, navigation }) {
   const leadsCtx = useContext(LeadsContext);
   const uploadLeadsCtx = useContext(UploadLeadsContext);
+  const [isConnected, setIsConnected] = useState(false);
 
   const editedLeadId = route.params?.leadId;
   const isEditing = !!editedLeadId; // '!!' converts to boolean
@@ -29,6 +32,14 @@ function ManageLead({ route, navigation }) {
     });
   }, [navigation, isEditing]);
 
+  useEffect(() => {
+    const unsubscribe = NetInfo.addEventListener((state) => {
+      setIsConnected(state.isConnected);
+    });
+
+    unsubscribe();
+  }, []);
+
   async function deleteLeadHandler() {
     Alert.alert('Warning:', 'Delete this record?', [
       {
@@ -39,6 +50,15 @@ function ManageLead({ route, navigation }) {
       {
         text: 'OK',
         onPress: async () => {
+          // delete online
+          if (isConnected) {
+            try {
+              await deleteLead(editedLeadId);
+            } catch (error) {
+              console.log('error on online delete', error);
+            }
+          }
+
           // delete to local
           leadsCtx.deleteLead(editedLeadId);
 
@@ -67,6 +87,15 @@ function ManageLead({ route, navigation }) {
 
   async function confirmHandler(leadsData) {
     if (isEditing) {
+      // update online
+      if (isConnected) {
+        try {
+          await updateLead(leadsData, editedLeadId);
+        } catch (error) {
+          console.log('error on online submit', error);
+        }
+      }
+
       // update to local
       leadsCtx.updateLead(editedLeadId, leadsData);
 
@@ -79,6 +108,19 @@ function ManageLead({ route, navigation }) {
         { text: 'OK', onPress: () => navigation.goBack() },
       ]);
     } else {
+      // submit online
+      if (isConnected) {
+        try {
+          response = await storeLead(leadsData);
+
+          if (response.status == 200) {
+            leadsData.is_uploaded = 'true';
+          }
+        } catch (error) {
+          console.log('error on online submit', error);
+        }
+      }
+
       // add to local
       leadsCtx.addLead(leadsData);
 

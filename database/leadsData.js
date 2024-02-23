@@ -40,6 +40,12 @@ export async function initiateLead() {
 export async function leadsFetch() {
   // initiateLead();
 
+  // add remarks column here
+  const count = await checkColumnExists('leads', 'remarks');
+  if (count == 0) {
+    await addRemarksColumn();
+  }
+
   const leads = [];
 
   try {
@@ -54,6 +60,7 @@ export async function leadsFetch() {
     console.log(error, 'error');
     initiateLead();
   }
+
   return leads;
 }
 
@@ -231,7 +238,9 @@ export function showLeadData(id) {
 
 export async function uploadLead() {
   await db.transactionAsync(async (tx) => {
-    await tx.executeSqlAsync("UPDATE leads SET is_uploaded = 'true' WHERE is_uploaded = 'false'");
+    await tx.executeSqlAsync(
+      "UPDATE leads SET is_uploaded = 'true' WHERE is_uploaded = 'false'"
+    );
   });
 }
 
@@ -240,4 +249,57 @@ export async function dropTable() {
     console.log('delete');
     await tx.executeSqlAsync('DROP TABLE leads');
   });
+}
+
+export async function checkColumnExists(table, column) {
+  let count = '';
+
+  try {
+    await db.transactionAsync(async (tx) => {
+      const results = await tx.executeSqlAsync(
+        'SELECT COUNT(*) AS CNTREC FROM pragma_table_info(?) WHERE name=?',
+        [table, column]
+      );
+
+      count = results.rows[0]['CNTREC'];
+    });
+  } catch (error) {
+    console.log('error checkColumnExist', error);
+  }
+
+  return count;
+}
+
+export async function addNewNullableColumn(table, columnName, columnProperty) {
+  try {
+    //
+    await db.transactionAsync(async (tx) => {
+      await tx.executeSqlAsync('ALTER TABLE ? ADD ? ? NULL', [
+        table,
+        columnName,
+        columnProperty,
+      ]);
+    });
+
+    return true;
+  } catch (error) {
+    console.log('new column error', error);
+
+    return false;
+  }
+}
+
+export async function addRemarksColumn() {
+  try {
+    //
+    await db.transactionAsync(async (tx) => {
+      await tx.executeSqlAsync('ALTER TABLE leads ADD remarks TEXT NULL', []);
+    });
+
+    return true;
+  } catch (error) {
+    console.log('new remarks column error', error);
+
+    return false;
+  }
 }

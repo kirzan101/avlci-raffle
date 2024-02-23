@@ -64,6 +64,10 @@ function leadValidation(request) {
       value: request.civil_status,
       isValid: civilStatusIsValid,
     },
+    remarks: {
+      value: request.remarks,
+      isValid: true,
+    },
     is_uploaded: {
       value: request.is_uploaded,
       isValid: true,
