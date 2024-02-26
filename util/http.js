@@ -12,9 +12,9 @@ const opcLink = 'https://leads.avlci.com/api/opc-leads';
 // }
 
 async function authenticate() {
-  const response = await axios.post('https://leads.avlci.com/api/login', {
+  const response = await axios.post('https://leads.avlci.com/api/mobile/login', {
     email: 'opc-lead@astoria.com.ph',
-    password: 'P@ssw0rd',
+    password: '0aj1bvlBv7PXEyU73Cs=',
   });
 
   return response;
