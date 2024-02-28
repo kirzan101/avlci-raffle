@@ -1,7 +1,7 @@
 import { openDatabase } from 'expo-sqlite';
 import { getFormattedDate } from '../util/date.js';
 // import { openDatabase, openDatabaseAsync } from 'expo-sqlite/next';
-const db = openDatabase('db');
+const db = openDatabase('leads');
 
 // dropTable();
 
@@ -27,14 +27,13 @@ export async function initiateLead() {
     'is_uploaded TEXT' +
     ')';
 
-  await db.transactionAsync(async (tx) => {
+  const response = await db.transactionAsync(async (tx) => {
     await tx.executeSqlAsync(sql, [], (tx, results) => {
       console.log(results);
     });
   });
 
-  console.log('initiated');
-  return results;
+  return response;
 }
 
 export async function leadsFetch() {
@@ -87,8 +86,10 @@ export async function unUploadedleadsFetch() {
 
 export async function insertLeadData(request) {
   try {
+    let response = 0;
+
     await db.transactionAsync(async (tx) => {
-      return await tx.executeSqlAsync(
+      response = await tx.executeSqlAsync(
         'INSERT INTO leads (' +
           'first_name, ' +
           'middle_name, ' +
@@ -105,9 +106,10 @@ export async function insertLeadData(request) {
           'source, ' +
           'civil_status, ' +
           'is_uploaded, ' +
+          'remarks, ' +
           'created_at' +
           ') ' +
-          'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+          'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
         [
           request.first_name,
           request.middle_name,
@@ -124,15 +126,18 @@ export async function insertLeadData(request) {
           request.source,
           request.civil_status,
           request.is_uploaded,
+          request.remarks,
           request.created_at.toString(),
         ]
       );
+
+      return response;
     });
 
-    return true;
+    return response.insertId;
   } catch (error) {
     console.log('insert error', error);
-    return false;
+    return response;
   }
 }
 
@@ -156,6 +161,7 @@ export async function updateLeadData(id, request) {
           'source = ?, ' +
           'civil_status = ?, ' +
           'is_uploaded = ? ' +
+          'remarks = ? ' +
           'WHERE id = ?',
         [
           request.first_name,
@@ -173,6 +179,7 @@ export async function updateLeadData(id, request) {
           request.source,
           request.civil_status,
           request.is_uploaded,
+          request.remarks,
           id,
         ]
       );

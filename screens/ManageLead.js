@@ -50,15 +50,6 @@ function ManageLead({ route, navigation }) {
       {
         text: 'OK',
         onPress: async () => {
-          // delete online
-          if (isConnected) {
-            try {
-              await deleteLead(editedLeadId);
-            } catch (error) {
-              console.log('error on online delete', error);
-            }
-          }
-
           // delete to local
           leadsCtx.deleteLead(editedLeadId);
 
@@ -86,22 +77,14 @@ function ManageLead({ route, navigation }) {
   }
 
   async function confirmHandler(leadsData) {
-    if (isEditing) {
-      // update online
-      if (isConnected) {
-        try {
-          await updateLead(leadsData, editedLeadId);
-        } catch (error) {
-          console.log('error on online submit', error);
-        }
-      }
+    const onlineLeadData = leadsData;
 
+    if (isEditing) {
       // update to local
       leadsCtx.updateLead(editedLeadId, leadsData);
 
       // update to database
-      await updateLeadData(editedLeadId, leadsData);
-
+      const result = await updateLeadData(editedLeadId, leadsData);
       const message = result ? 'Successfully Updated!' : 'Invalid form.';
 
       Alert.alert('Notice:', message, [
@@ -111,23 +94,30 @@ function ManageLead({ route, navigation }) {
       // submit online
       if (isConnected) {
         try {
-          response = await storeLead(leadsData);
+          // //remove sa is_uploaded column
+          delete onlineLeadData['is_uploaded'];
+
+          const response = await storeLead(onlineLeadData);
 
           if (response.status == 200) {
             leadsData.is_uploaded = 'true';
           }
         } catch (error) {
-          console.log('error on online submit', error);
+          console.log('error on online submit', error.response.data);
         }
+      }
+
+      // add to database
+      const insertedId = await insertLeadData(leadsData);
+      console.log('leadsDataBefore', insertedId, leadsData);
+      if (insertedId > 0) {
+        leadsData['id'] = insertedId;
       }
 
       // add to local
       leadsCtx.addLead(leadsData);
-
-      // add to database
-      const result = await insertLeadData(leadsData);
-
-      const message = result ? 'Successfully Added!' : 'Invalid form.';
+      console.log('leadsData', insertedId, leadsData);
+      const message = insertedId > 0 ? 'Successfully Added!' : 'Invalid form.';
 
       Alert.alert('Notice:', message, [
         { text: 'OK', onPress: () => navigation.goBack() },
@@ -143,9 +133,10 @@ function ManageLead({ route, navigation }) {
           onSubmit={confirmHandler}
           onCancel={cancelHandler}
           defaultValues={selectedLead}
+          isEditing={isEditing}
         />
       </ScrollView>
-      {isEditing && (
+      {isEditing && selectedLead.is_uploaded == 'false' && (
         <View style={styles.deleteContainer}>
           <IconButton
             icon="trash"

@@ -4,6 +4,9 @@ import { LeadsContext } from '../store/leads-context';
 import { leadsFetch } from '../database/leadsData';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { getFormattedDate } from '../util/date';
+import NetInfo from '@react-native-community/netinfo';
+import { StyleSheet, Text, View } from 'react-native';
+import { GlobalStyles } from '../constants/styles';
 
 function AllLeads() {
   const leadsCtx = useContext(LeadsContext);
@@ -11,9 +14,15 @@ function AllLeads() {
   const [filterDate, setFilterDate] = useState('');
   const [search, setSearch] = useState('');
   const [defaultLeads, setDefaultLeads] = useState([]);
+  const [isConnected, setIsConnected] = useState(false);
 
   useEffect(() => {
     getLeads();
+
+    const unsubscribe = NetInfo.addEventListener((state) => {
+      setIsConnected(state.isConnected);
+    });
+    unsubscribe();
   }, []);
 
   async function getLeads() {
@@ -107,6 +116,11 @@ function AllLeads() {
   // return <LeadsOutput leads={leadsCtx.leads} leadsPeriod="Total" fallbackText="No registered leads" />;
   return (
     <>
+      <View>
+        {!isConnected && (
+          <Text style={styles.connectionStatusOffline}>Offline mode</Text>
+        )}
+      </View>
       <LeadsOutput
         leads={leadsCtx.leads}
         leadsPeriod={leadsPeriodText}
@@ -128,3 +142,18 @@ function AllLeads() {
 }
 
 export default AllLeads;
+
+const styles = StyleSheet.create({
+  connectionStatusOnline: {
+    backgroundColor: GlobalStyles.colors.primary400,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    color: 'white',
+  },
+  connectionStatusOffline: {
+    backgroundColor: GlobalStyles.colors.error500,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    color: 'white',
+  },
+});

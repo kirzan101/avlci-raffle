@@ -14,7 +14,13 @@ import leadValidation from '../../validations/leadValidation';
 import { GlobalStyles } from '../../constants/styles';
 import Dropdown from './Dropdown';
 
-function LeadForm({ submitButtonLabel, onCancel, onSubmit, defaultValues }) {
+function LeadForm({
+  submitButtonLabel,
+  onCancel,
+  onSubmit,
+  defaultValues,
+  isEditing,
+}) {
   const today = new Date();
   const [inputs, setInputs] = useState({
     first_name: {
@@ -367,9 +373,16 @@ function LeadForm({ submitButtonLabel, onCancel, onSubmit, defaultValues }) {
         }}
       />
       <View style={styles.buttons}>
-        <Button style={styles.button} onPress={submitHandler}>
-          {submitButtonLabel}
-        </Button>
+        {isEditing && inputs.is_uploaded.value == 'false' && (
+          <Button style={styles.button} onPress={submitHandler}>
+            {submitButtonLabel}
+          </Button>
+        )}
+        {!isEditing && (
+          <Button style={styles.button} onPress={submitHandler}>
+            {submitButtonLabel}
+          </Button>
+        )}
         <Button style={styles.button} mode="flat" onPress={onCancel}>
           Cancel
         </Button>

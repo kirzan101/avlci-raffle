@@ -3,6 +3,7 @@ const { createContext, useReducer, useState } = require("react");
 export const LeadsContext = createContext({
   leads: [],
   addLead: ({
+    id,
     first_name,
     middle_name,
     last_name,
