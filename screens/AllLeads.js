@@ -7,6 +7,7 @@ import { getFormattedDate } from '../util/date';
 import NetInfo from '@react-native-community/netinfo';
 import { StyleSheet, Text, View } from 'react-native';
 import { GlobalStyles } from '../constants/styles';
+import {name, version}  from '../package.json'
 
 function AllLeads() {
   const leadsCtx = useContext(LeadsContext);
@@ -137,6 +138,9 @@ function AllLeads() {
         onConfirm={handleConfirm}
         onCancel={hideDatePicker}
       />
+      <View>
+        <Text style={styles.versionText}>{name} v{version}</Text>
+      </View>
     </>
   );
 }
@@ -156,4 +160,10 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: 'white',
   },
+  versionText: {
+    backgroundColor: GlobalStyles.colors.primary200,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    color: 'white',
+  }
 });

@@ -12,6 +12,7 @@ import { storeBulkLead, getLead, fetchLead } from '../util/http';
 import ConfirmationModal from '../components/UI/ConfirmationModal';
 import NetInfo from '@react-native-community/netinfo';
 import { GlobalStyles } from '../constants/styles';
+import { name, version } from '../package.json';
 
 function UploadLeads() {
   const uploadLeadsCtx = useContext(UploadLeadsContext);
@@ -109,6 +110,11 @@ function UploadLeads() {
           </Button>
         )}
       </View>
+      <View>
+        <Text style={styles.versionText}>
+          {name} v{version}
+        </Text>
+      </View>
     </>
   );
 }
@@ -154,6 +160,12 @@ const styles = StyleSheet.create({
   },
   connectionStatusOffline: {
     backgroundColor: GlobalStyles.colors.error500,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    color: 'white',
+  },
+  versionText: {
+    backgroundColor: GlobalStyles.colors.primary200,
     fontWeight: 'bold',
     textAlign: 'center',
     color: 'white',
