@@ -1,7 +1,7 @@
 import { openDatabase } from 'expo-sqlite';
 import { getFormattedDate } from '../util/date.js';
 // import { openDatabase, openDatabaseAsync } from 'expo-sqlite/next';
-const db = openDatabase('leads');
+const db = openDatabase('opc_leads');
 
 // dropTable();
 

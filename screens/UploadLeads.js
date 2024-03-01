@@ -100,7 +100,7 @@ function UploadLeads() {
         <Text style={styles.infoText}>
           For Upload Leads: {unuploadedLeadCount}
         </Text>
-        {unuploadedLeadCount > 0 && isConnected && (
+        {unuploadedLeadCount > 0 && (
           <Button
             style={styles.button}
             onPress={uploadLeadsHandler}
@@ -109,6 +109,9 @@ function UploadLeads() {
             Click to upload
           </Button>
         )}
+        {/* <Button style={styles.button} onPress={uploadLeadsHandler}>
+          Click to upload
+        </Button> */}
       </View>
       <View>
         <Text style={styles.versionText}>

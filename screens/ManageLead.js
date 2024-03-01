@@ -10,8 +10,12 @@ import {
   insertLeadData,
   updateLeadData,
   deleteLeadData,
-  unUploadedleadsFetch,
 } from '../database/leadsData';
+import {
+  getSourceDefaults,
+  storeDefaults,
+  updateDafaults,
+} from '../database/sourceData';
 import { UploadLeadsContext } from '../store/upload-leads-context';
 import { deleteLead, storeLead, updateLead } from '../util/http';
 import NetInfo from '@react-native-community/netinfo';
@@ -20,6 +24,7 @@ function ManageLead({ route, navigation }) {
   const leadsCtx = useContext(LeadsContext);
   const uploadLeadsCtx = useContext(UploadLeadsContext);
   const [isConnected, setIsConnected] = useState(false);
+  const [defaultSource, setDefaultSource] = useState({});
 
   const editedLeadId = route.params?.leadId;
   const isEditing = !!editedLeadId; // '!!' converts to boolean
@@ -37,8 +42,20 @@ function ManageLead({ route, navigation }) {
       setIsConnected(state.isConnected);
     });
 
+    // defaults here
+    async function getSourceDefaultsValue() {
+      const defaultResult = await getSourceDefaults();
+      setDefaultSource(defaultResult);
+      console.log(defaultSource, 'defaultResult');
+    }
+
     unsubscribe();
+    getSourceDefaultsValue();
   }, []);
+
+  // console.log(defaultSource, 'defaultSource', selectedLead);
+  console.log('selectedLead', selectedLead);
+  //set source default values
 
   async function deleteLeadHandler() {
     Alert.alert('Warning:', 'Delete this record?', [
@@ -109,14 +126,24 @@ function ManageLead({ route, navigation }) {
 
       // add to database
       const insertedId = await insertLeadData(leadsData);
-      console.log('leadsDataBefore', insertedId, leadsData);
+
       if (insertedId > 0) {
         leadsData['id'] = insertedId;
       }
 
+      // add default source
+      // if (
+      //   defaultSource.source_prefix.length > 0 &&
+      //   defaultSource.source.length > 0
+      // ) {
+      //   await updateDafaults(defaultSource);
+      // } else {
+      //   await storeDefaults(defaultSource);
+      // }
+
       // add to local
       leadsCtx.addLead(leadsData);
-      console.log('leadsData', insertedId, leadsData);
+
       const message = insertedId > 0 ? 'Successfully Added!' : 'Invalid form.';
 
       Alert.alert('Notice:', message, [
@@ -134,6 +161,7 @@ function ManageLead({ route, navigation }) {
           onCancel={cancelHandler}
           defaultValues={selectedLead}
           isEditing={isEditing}
+          defaultSource={defaultSource}
         />
       </ScrollView>
       {isEditing && selectedLead.is_uploaded == 'false' && (

@@ -20,6 +20,7 @@ function LeadForm({
   onSubmit,
   defaultValues,
   isEditing,
+  defaultSource,
 }) {
   const today = new Date();
   const [inputs, setInputs] = useState({
@@ -107,6 +108,10 @@ function LeadForm({
   ];
 
   const source_prefixes = [
+    { label: 'OPC', value: 'OPC' },
+    { label: 'JPC', value: 'JPC' },
+    { label: 'OPC/IHG', value: 'OPC/IHG' },
+    { label: 'CSD/IHG', value: 'CSD/IHG' },
     { label: 'LSR', value: 'LSR' },
     { label: 'ALM', value: 'ALM' },
     { label: 'LS', value: 'LS' },

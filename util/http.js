@@ -128,7 +128,6 @@ export async function storeLead(leadData) {
   };
 
   const response = await axios.post(opcLink, leadData, { headers });
-
   return response;
 }
 

@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
   image: {
     width: 300,
     height: 300,
-    margin: 20,
+    margin: 1,
   },
   filterContainer: {
     flexDirection: 'row',
