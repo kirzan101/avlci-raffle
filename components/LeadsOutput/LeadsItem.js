@@ -1,5 +1,5 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { getFormattedDate, convertToDate } from '../../util/date';
+import { getFormattedDate, convertToDate, getTime } from '../../util/date';
 import { Ionicons } from '@expo/vector-icons';
 
 import { GlobalStyles } from '../../constants/styles';
@@ -32,14 +32,24 @@ function LeadsItem({ id, first_name, last_name, created_at, is_uploaded }) {
           )}
         </Text>
         <View style={styles.createdContainer}>
-          <Ionicons
-            name="time"
-            size={24}
-            color={'green'}
-            style={styles.iconContainer}
-          />
-          <Text style={styles.textContainer}>
+          <Text style={styles.createdText}>
+            <Ionicons
+              name="calendar"
+              size={24}
+              color={'green'}
+              style={styles.iconContainer}
+            />
+            {/* {getFormattedDate(convertToDate(created_at))} */}
             {getFormattedDate(convertToDate(created_at))}
+          </Text>
+          <Text style={styles.createdText}>
+            <Ionicons
+              name="time"
+              size={24}
+              color={'green'}
+              style={styles.iconContainer}
+            />
+            {getTime(convertToDate(created_at))}
           </Text>
         </View>
       </View>
@@ -63,7 +73,7 @@ const styles = StyleSheet.create({
     borderColor: GlobalStyles.colors.primary100,
   },
   createdContainer: {
-    flexDirection: 'row',
+    flexDirection: 'column',
     // flex: 2,
     justifyContent: 'space-between',
     margin: 2,
@@ -76,6 +86,13 @@ const styles = StyleSheet.create({
   },
   textContainer: {
     marginVertical: 5,
+    fontSize: 16,
+    fontWeight: 'bold',
+    justifyContent: 'center',
+    flexDirection: 'column',
+  },
+  createdText: {
+    marginVertical: 1,
     fontSize: 16,
     fontWeight: 'bold',
   },

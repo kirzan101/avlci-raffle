@@ -41,7 +41,7 @@ function LeadsOverview() {
         name="AllLeads"
         component={AllLeads}
         options={{
-          title: 'All Leads',
+          title: 'All',
           tabBarLabel: 'All',
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="calendar" size={size} color={color} />

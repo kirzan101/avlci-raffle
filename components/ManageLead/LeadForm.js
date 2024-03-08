@@ -145,21 +145,21 @@ function LeadForm({
 
   function submitHandler() {
     const leadsData = {
-      first_name: inputs.first_name.value,
-      middle_name: inputs.middle_name.value,
-      last_name: inputs.last_name.value,
-      companion_first_name: inputs.companion_first_name.value,
-      companion_middle_name: inputs.companion_middle_name.value,
-      companion_last_name: inputs.companion_last_name.value,
-      address: inputs.address.value,
-      hotel: inputs.hotel.value,
-      mobile_number: inputs.mobile_number.value,
-      occupation: inputs.occupation.value,
-      age: inputs.age.value,
-      source_prefix: inputs.source_prefix.value,
-      source: inputs.source.value,
-      civil_status: inputs.civil_status.value,
-      remarks: inputs.remarks.value,
+      first_name: inputs.first_name.value.trim(),
+      middle_name: inputs.middle_name.value.trim(),
+      last_name: inputs.last_name.value.trim(),
+      companion_first_name: inputs.companion_first_name.value.trim(),
+      companion_middle_name: inputs.companion_middle_name.value.trim(),
+      companion_last_name: inputs.companion_last_name.value.trim(),
+      address: inputs.address.value.trim(),
+      hotel: inputs.hotel.value.trim(),
+      mobile_number: inputs.mobile_number.value.trim(),
+      occupation: inputs.occupation.value.trim(),
+      age: inputs.age.value.trim(),
+      source_prefix: inputs.source_prefix.value.trim(),
+      source: inputs.source.value.trim(),
+      civil_status: inputs.civil_status.value.trim(),
+      remarks: inputs.remarks.value.trim(),
       is_uploaded: 'false',
       created_at: today,
     };
@@ -179,7 +179,7 @@ function LeadForm({
 
   return (
     <View style={styles.form}>
-      <Text style={styles.title}>Lead Information</Text>
+      <Text style={styles.title}>Complimentary breakfast availment</Text>
       <Input
         label="First Name"
         isInvalid={isInvalid && !inputs.first_name.isValid}

@@ -16,13 +16,11 @@ import {
   storeDefaults,
   updateDafaults,
 } from '../database/sourceData';
-import { UploadLeadsContext } from '../store/upload-leads-context';
-import { deleteLead, storeLead, updateLead } from '../util/http';
+import { storeLead } from '../util/http';
 import NetInfo from '@react-native-community/netinfo';
 
 function ManageLead({ route, navigation }) {
   const leadsCtx = useContext(LeadsContext);
-  const uploadLeadsCtx = useContext(UploadLeadsContext);
   const [isConnected, setIsConnected] = useState(false);
   const [defaultSource, setDefaultSource] = useState({});
 
@@ -33,7 +31,7 @@ function ManageLead({ route, navigation }) {
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      title: isEditing ? 'Edit Lead' : 'Add Lead',
+      title: isEditing ? 'Edit' : 'Add',
     });
   }, [navigation, isEditing]);
 
@@ -52,10 +50,6 @@ function ManageLead({ route, navigation }) {
     unsubscribe();
     getSourceDefaultsValue();
   }, []);
-
-  // console.log(defaultSource, 'defaultSource', selectedLead);
-  console.log('selectedLead', selectedLead);
-  //set source default values
 
   async function deleteLeadHandler() {
     Alert.alert('Warning:', 'Delete this record?', [
@@ -79,14 +73,6 @@ function ManageLead({ route, navigation }) {
         },
       },
     ]);
-
-    // // delete to local
-    // leadsCtx.deleteLead(editedLeadId);
-
-    // // delete to database
-    // await deleteLeadData(editedLeadId);
-
-    // navigation.goBack()
   }
 
   function cancelHandler() {
@@ -111,9 +97,6 @@ function ManageLead({ route, navigation }) {
       // submit online
       if (isConnected) {
         try {
-          // //remove sa is_uploaded column
-          delete onlineLeadData['is_uploaded'];
-
           const response = await storeLead(onlineLeadData);
 
           if (response.status == 200) {
@@ -130,16 +113,6 @@ function ManageLead({ route, navigation }) {
       if (insertedId > 0) {
         leadsData['id'] = insertedId;
       }
-
-      // add default source
-      // if (
-      //   defaultSource.source_prefix.length > 0 &&
-      //   defaultSource.source.length > 0
-      // ) {
-      //   await updateDafaults(defaultSource);
-      // } else {
-      //   await storeDefaults(defaultSource);
-      // }
 
       // add to local
       leadsCtx.addLead(leadsData);

@@ -127,6 +127,9 @@ export async function storeLead(leadData) {
     'Content-Type': 'application/json',
   };
 
+  //remove sa is_uploaded column
+  delete leadData['is_uploaded'];
+
   const response = await axios.post(opcLink, leadData, { headers });
   return response;
 }

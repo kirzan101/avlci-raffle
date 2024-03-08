@@ -1,6 +1,13 @@
 export function getFormattedDate(date) {
-  // return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
   return date.toISOString().slice(0, 10);
+}
+
+export function getDateTime(date) {
+  return date.toLocaleString();
+}
+
+export function getTime(date) {
+  return date.toLocaleTimeString();
 }
 
 export function getDateMinusDays(date, days) {
