@@ -112,16 +112,16 @@ function LeadForm({
     { label: 'JPC', value: 'JPC' },
     { label: 'OPC/IHG', value: 'OPC/IHG' },
     { label: 'CSD/IHG', value: 'CSD/IHG' },
-    { label: 'LSR', value: 'LSR' },
-    { label: 'ALM', value: 'ALM' },
-    { label: 'LS', value: 'LS' },
-    { label: 'IP', value: 'IP' },
-    { label: 'PRJ', value: 'PRJ' },
-    { label: 'ROI', value: 'ROI' },
-    { label: 'NMB', value: 'NMB' },
-    { label: 'BROI', value: 'BROI' },
-    { label: 'BNMB', value: 'BNMB' },
-    { label: 'SURVEY', value: 'SURVEY' },
+    // { label: 'LSR', value: 'LSR' },
+    // { label: 'ALM', value: 'ALM' },
+    // { label: 'LS', value: 'LS' },
+    // { label: 'IP', value: 'IP' },
+    // { label: 'PRJ', value: 'PRJ' },
+    // { label: 'ROIeioprtuy[4r', value: 'ROI' },
+    // { label: 'NMB', value: 'NMB' },
+    // { label: 'BROI', value: 'BROI' },
+    // { label: 'BNMB', value: 'BNMB' },
+    // { label: 'SURVEY', value: 'SURVEY' },
   ];
 
   const getCivilStatus = (val) => {
@@ -342,7 +342,7 @@ function LeadForm({
         <Text style={styles.errorText}>Source prefix is required</Text>
       )}
       <Input
-        label="Source"
+        label="Agent"
         isInvalid={isInvalid && !inputs.source.isValid}
         isRequired={true}
         textInputConfig={{
