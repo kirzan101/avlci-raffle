@@ -1,5 +1,13 @@
 import { useContext, useEffect, useState } from 'react';
-import { StyleSheet, Text, View, Image, Pressable, Alert } from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  Pressable,
+  Alert,
+  TouchableOpacity,
+} from 'react-native';
 import Button from '../components/UI/Button';
 import { updateLocalAgents } from '../util/http';
 import ConfirmationModal from '../components/UI/ConfirmationModal';
@@ -78,13 +86,26 @@ function UploadLeads() {
           style={styles.image}
           source={require('../assets/images/undraw_download.png')}
         />
-        <Button
-          style={styles.button}
-          disabled={btnStatus}
-          onPress={updateAgentsHandler}
-        >
-          Update Agents
-        </Button>
+        {isConnected && (
+          <View>
+            <Text style={styles.infoText}>Update Agent list</Text>
+            <Button
+              style={styles.button}
+              disabled={btnStatus}
+              onPress={updateAgentsHandler}
+            >
+              Update Agents
+            </Button>
+          </View>
+        )}
+        {!isConnected && (
+          <View>
+            <Text style={styles.infoText}>Not Available when Offline</Text>
+            <TouchableOpacity style={styles.buttonDisabled} disabled={true}>
+              <Text style={styles.buttonTextDisabled}>Update Agents</Text>
+            </TouchableOpacity>
+          </View>
+        )}
       </View>
       <View>
         <Text style={styles.versionText}>
@@ -127,6 +148,20 @@ const styles = StyleSheet.create({
     marginHorizontal: 8,
     marginTop: 20,
     marginBottom: 50,
+  },
+  buttonDisabled: {
+    minWidth: 120,
+    marginHorizontal: 8,
+    marginTop: 20,
+    marginBottom: 50,
+    backgroundColor: '#A9A9A9',
+    padding: 10,
+    borderRadius: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  buttonTextDisabled: {
+    color: '#DDD',
   },
   connectionStatusOnline: {
     backgroundColor: GlobalStyles.colors.primary400,
