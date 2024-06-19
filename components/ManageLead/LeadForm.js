@@ -8,11 +8,12 @@ import {
 } from 'react-native';
 import Input from './Input';
 import { convertToDate, getFormattedDate } from '../../util/date';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Button from '../UI/Button';
 import leadValidation from '../../validations/leadValidation';
 import { GlobalStyles } from '../../constants/styles';
 import Dropdown from './Dropdown';
+import { getAgents } from '../../util/http';
 
 function LeadForm({
   submitButtonLabel,
@@ -110,6 +111,7 @@ function LeadForm({
   const source_prefixes = [
     { label: 'OPC', value: 'OPC' },
     { label: 'JPC', value: 'JPC' },
+    { label: 'OPC-MR', value: 'OPC-MR' },
     { label: 'OPC/IHG', value: 'OPC/IHG' },
     { label: 'CSD/IHG', value: 'CSD/IHG' },
     // { label: 'LSR', value: 'LSR' },
@@ -124,12 +126,44 @@ function LeadForm({
     // { label: 'SURVEY', value: 'SURVEY' },
   ];
 
+  const [agents, setAgents] = useState([]);
+  const agent_list = async () => {
+    try {
+      const response = await getAgents();
+      // const data = await response.json();
+      const mappedAgent = response.map(agent => {
+        return {
+          label: `${agent.last_name}, ${agent.first_name}`,
+          value: agent.employee_number
+        }
+      })
+
+      setAgents([...mappedAgent]);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
+  useEffect(() => {
+    const initializeData = async () => {
+      await agent_list();
+    };
+
+    initializeData();
+  }, []);
+
+  // console.log('agentList', agent_list());
+
   const getCivilStatus = (val) => {
     inputChangeHandler('civil_status', val);
   };
 
   const getSourcePrefix = (val) => {
     inputChangeHandler('source_prefix', val);
+  };
+
+  const getSource = (val) => {
+    inputChangeHandler('source', val);
   };
 
   function inputChangeHandler(inputIdentifier, enteredValue) {
@@ -341,7 +375,7 @@ function LeadForm({
       {isInvalid && !inputs.source_prefix.isValid && (
         <Text style={styles.errorText}>Source prefix is required</Text>
       )}
-      <Input
+      {/* <Input
         label="Agent"
         isInvalid={isInvalid && !inputs.source.isValid}
         isRequired={true}
@@ -352,6 +386,14 @@ function LeadForm({
           onChangeText: inputChangeHandler.bind(this, 'source'),
           value: inputs.source.value,
         }}
+      /> */}
+      <Dropdown
+        options={agents}
+        label={'Agent'}
+        isInvalid={isInvalid && !inputs.source.isValid}
+        isRequired={true}
+        dropdownVal={getSource}
+        value={inputs.source.value}
       />
       {isInvalid && !inputs.source.isValid && (
         <Text style={styles.errorText}>Source is required</Text>

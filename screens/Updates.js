@@ -1,41 +1,26 @@
 import { useContext, useEffect, useState } from 'react';
-import { LeadsContext } from '../store/leads-context';
-import { UploadLeadsContext } from '../store/upload-leads-context';
-import {
-  leadsFetch,
-  unUploadedleadsFetch,
-  uploadLead,
-} from '../database/leadsData';
 import { StyleSheet, Text, View, Image, Pressable, Alert } from 'react-native';
 import Button from '../components/UI/Button';
-import { storeBulkLead, getLead, fetchLead } from '../util/http';
+import { updateLocalAgents } from '../util/http';
 import ConfirmationModal from '../components/UI/ConfirmationModal';
 import NetInfo from '@react-native-community/netinfo';
 import { GlobalStyles } from '../constants/styles';
 import { name, version } from '../package.json';
 
 function UploadLeads() {
-  const uploadLeadsCtx = useContext(UploadLeadsContext);
-  const leadsCtx = useContext(LeadsContext);
   const [isConnected, setIsConnected] = useState(false);
 
   useEffect(() => {
-    async function getLeads() {
-      const leads = await unUploadedleadsFetch();
-      uploadLeadsCtx.setLeads(leads);
-    }
-
     const unsubscribe = NetInfo.addEventListener((state) => {
+      // console.log(state.isConnected),              ;
       setIsConnected(state.isConnected);
     });
-
-    getLeads();
     unsubscribe();
   }, []);
   const [modalVisible, setModalVisible] = useState(false);
   const [btnStatus, setBtnStatus] = useState(false);
 
-  async function uploadLeadsHandler() {
+  async function updateAgentsHandler() {
     setModalVisible(true);
     setBtnStatus(false);
   }
@@ -47,21 +32,14 @@ function UploadLeads() {
 
   async function confirmModalHandle(callback) {
     if (callback) {
-      const leads = await unUploadedleadsFetch();
-      const result = await storeBulkLead(leads);
+      const isUpdated = await updateLocalAgents();
 
+      // close the first modal
       setModalVisible(false);
       setBtnStatus(true);
 
-      if (result.status == 200) {
-        //upload leads
-        await uploadLead();
-
-        // update all leads context
-        const updatedLeads = await leadsFetch();
-        leadsCtx.setLeads(updatedLeads);
-
-        Alert.alert('Notice:', 'Successfully uploaded!', [
+      if (isUpdated) {
+        Alert.alert('Notice:', 'Successfully updated!', [
           {
             text: 'OK',
             onPress: () => {
@@ -71,7 +49,7 @@ function UploadLeads() {
           },
         ]);
       } else {
-        Alert.alert('Notice:', 'Upload error!', [
+        Alert.alert('Notice:', 'No updates!', [
           {
             text: 'OK',
             onPress: () => setModalVisible(false),
@@ -80,10 +58,6 @@ function UploadLeads() {
       }
     }
   }
-
-  const unuploadedLeadCount = leadsCtx.leads.filter(
-    (lead) => lead.is_uploaded == 'false'
-  ).length;
 
   return (
     <>
@@ -97,27 +71,20 @@ function UploadLeads() {
           openModal={modalVisible}
           closeModal={closeModalHandle}
           confirmModal={confirmModalHandle}
-          message={'Upload all the leads?'}
+          message={'Update agents?'}
+          btnStatus={btnStatus}
         />
         <Image
           style={styles.image}
-          source={require('../assets/images/undraw_upload.png')}
+          source={require('../assets/images/undraw_download.png')}
         />
-        <Text style={styles.infoText}>
-          Unuploaded Leads: {unuploadedLeadCount}
-        </Text>
-        {unuploadedLeadCount > 0 && (
-          <Button
-            style={styles.button}
-            onPress={uploadLeadsHandler}
-            disabled={unuploadedLeadCount == 0 ? true : false}
-          >
-            Click to upload
-          </Button>
-        )}
-        {/* <Button style={styles.button} onPress={uploadLeadsHandler}>
-          Click to upload
-        </Button> */}
+        <Button
+          style={styles.button}
+          disabled={btnStatus}
+          onPress={updateAgentsHandler}
+        >
+          Update Agents
+        </Button>
       </View>
       <View>
         <Text style={styles.versionText}>

@@ -3,7 +3,7 @@ import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 import Button from './Button';
 import { GlobalStyles } from '../../constants/styles';
 
-function ConfirmationModal({ openModal, closeModal, confirmModal, message }) {
+function ConfirmationModal({ openModal, closeModal, confirmModal, message, btnStatus }) {
   const [modalVisible, setModalVisible] = useState(false);
 
   function closed() {
@@ -31,12 +31,14 @@ function ConfirmationModal({ openModal, closeModal, confirmModal, message }) {
           <View style={styles.buttonPosition}>
             <Pressable
               style={[styles.button, styles.buttonClose]}
+              disabled={btnStatus}
               onPress={() => closed()}
             >
               <Text style={styles.textStyle}>Cancel</Text>
             </Pressable>
             <Pressable
               style={[styles.button, styles.buttonConfirm]}
+              disabled={btnStatus}
               onPress={() => confirm()}
             >
               <Text style={styles.textStyle}>Confirm</Text>

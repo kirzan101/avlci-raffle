@@ -13,6 +13,7 @@ import IconButton from './components/UI/IconButton';
 import { Text } from 'react-native';
 import LeadsContextProvider from './store/leads-context';
 import UploadLeads from './screens/UploadLeads';
+import Updates from './screens/Updates';
 
 const Stack = createNativeStackNavigator();
 const BottomTabs = createBottomTabNavigator();
@@ -67,6 +68,21 @@ function LeadsOverview() {
           tabBarLabel: 'Upload',
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="cloud-upload-outline" size={size} color={color} />
+          ),
+        }}
+      />
+      <BottomTabs.Screen
+        name="Updates"
+        component={Updates}
+        options={{
+          title: 'Updates',
+          tabBarLabel: 'Updates',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons
+              name="information-circle-outline"
+              size={size}
+              color={color}
+            />
           ),
         }}
       />

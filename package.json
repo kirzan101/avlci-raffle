@@ -1,6 +1,6 @@
 {
   "name": "avlci-raffle",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
     "start": "expo start",
@@ -9,6 +9,7 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@react-native-async-storage/async-storage": "^1.23.1",
     "@react-native-community/datetimepicker": "^7.6.2",
     "@react-native-community/netinfo": "^11.3.0",
     "@react-native-picker/picker": "^2.6.1",

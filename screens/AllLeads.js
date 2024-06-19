@@ -7,7 +7,8 @@ import { getFormattedDate } from '../util/date';
 import NetInfo from '@react-native-community/netinfo';
 import { StyleSheet, Text, View } from 'react-native';
 import { GlobalStyles } from '../constants/styles';
-import {name, version}  from '../package.json'
+import { name, version } from '../package.json';
+import { localAgents } from '../util/http';
 
 function AllLeads() {
   const leadsCtx = useContext(LeadsContext);
@@ -19,6 +20,7 @@ function AllLeads() {
 
   useEffect(() => {
     getLeads();
+    getAgents();
 
     const unsubscribe = NetInfo.addEventListener((state) => {
       setIsConnected(state.isConnected);
@@ -30,6 +32,10 @@ function AllLeads() {
     const leads = await leadsFetch();
     leadsCtx.setLeads(leads);
     setDefaultLeads(leads);
+  }
+
+  async function getAgents() {
+    // const response = await localAgents();
   }
 
   // search filter
@@ -139,7 +145,9 @@ function AllLeads() {
         onCancel={hideDatePicker}
       />
       <View>
-        <Text style={styles.versionText}>{name} v{version}</Text>
+        <Text style={styles.versionText}>
+          {name} v{version}
+        </Text>
       </View>
     </>
   );
@@ -165,5 +173,5 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     color: 'white',
-  }
+  },
 });
