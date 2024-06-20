@@ -213,7 +213,7 @@ function LeadForm({
 
   return (
     <View style={styles.form}>
-      <Text style={styles.title}>Complimentary breakfast availment</Text>
+      <Text style={styles.title}>Complimentary buffet</Text>
       <Input
         label="First Name"
         isInvalid={isInvalid && !inputs.first_name.isValid}
