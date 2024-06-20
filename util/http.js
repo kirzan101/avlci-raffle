@@ -26,13 +26,13 @@ async function initiateAuth() {
     'token TEXT ' +
     ')';
 
-  const response = await db.transactionAsync(async (tx) => {
+  await db.transactionAsync(async (tx) => {
     await tx.executeSqlAsync(sql, [], (tx, results) => {
       console.log(results);
     });
   });
 
-  return response;
+  return;
 }
 
 async function authenticate() {
@@ -256,7 +256,7 @@ const bulkInsertAgents = async (agents) => {
 
 const deleteAgentsWithStatusNew = async () => {
   try {
-    const response = await db.transactionAsync(async (tx) => {
+    await db.transactionAsync(async (tx) => {
       const results = await tx.executeSqlAsync(
         'DELETE FROM agents WHERE status = "new"',
         []
@@ -344,179 +344,179 @@ const defaultAgents = [
     first_name: 'Odeth',
     middle_name: 'Hernaez',
   },
-  // {
-  //   status: 'new',
-  //   employee_number: '12092',
-  //   last_name: 'Cabato',
-  //   first_name: 'Romabel',
-  //   middle_name: 'Gozun',
-  // },
-  // {
-  //   status: 'new',
-  //   employee_number: '12137',
-  //   last_name: 'Tiongco',
-  //   first_name: 'Gilbert',
-  //   middle_name: 'Masula',
-  // },
-  // {
-  //   status: 'new',
-  //   employee_number: '12149',
-  //   last_name: 'Bartolome',
-  //   first_name: 'Elmer',
-  //   middle_name: 'Espiritu',
-  // },
-  // {
-  //   status: 'new',
-  //   employee_number: '12166',
-  //   last_name: 'Jamero',
-  //   first_name: 'Menandro',
-  //   middle_name: 'Baserto',
-  // },
-  // {
-  //   status: 'new',
-  //   employee_number: '12202',
-  //   last_name: 'Gallentes',
-  //   first_name: 'Elsen Hower',
-  //   middle_name: 'Celis',
-  // },
-  // {
-  //   status: 'new',
-  //   employee_number: '12235',
-  //   last_name: 'Duatin',
-  //   first_name: 'Maria Katrina',
-  //   middle_name: 'De Guzman',
-  // },
-  // {
-  //   status: 'new',
-  //   employee_number: '12249',
-  //   last_name: 'Viernes',
-  //   first_name: 'Keivin',
-  //   middle_name: 'Siobal',
-  // },
-  // {
-  //   status: 'new',
-  //   employee_number: '12259',
-  //   last_name: 'Magat',
-  //   first_name: 'Reynaldo',
-  //   middle_name: 'Sebastian',
-  // },
-  // {
-  //   status: 'new',
-  //   employee_number: '12262',
-  //   last_name: 'Pamat',
-  //   first_name: 'Marlyn',
-  //   middle_name: 'Oroceo',
-  // },
-  // {
-  //   status: 'new',
-  //   employee_number: '12280',
-  //   last_name: 'Mendoza',
-  //   first_name: 'Donnalyn',
-  //   middle_name: 'Mayo',
-  // },
-  // {
-  //   status: 'new',
-  //   employee_number: '12298',
-  //   last_name: 'Caparas',
-  //   first_name: 'Mary Ann',
-  //   middle_name: 'Galarse',
-  // },
-  // {
-  //   status: 'new',
-  //   employee_number: '12301',
-  //   last_name: 'Caño',
-  //   first_name: 'Rachel',
-  //   middle_name: 'Pamat',
-  // },
-  // {
-  //   status: 'new',
-  //   employee_number: '12303',
-  //   last_name: 'Amancio',
-  //   first_name: 'Jonalyn',
-  //   middle_name: 'Romano',
-  // },
-  // {
-  //   status: 'new',
-  //   employee_number: '12345',
-  //   last_name: 'Pindos',
-  //   first_name: 'Reynaldo',
-  //   middle_name: 'Aparri',
-  // },
-  // {
-  //   status: 'new',
-  //   employee_number: '12466',
-  //   last_name: 'Celis',
-  //   first_name: 'Neriza',
-  //   middle_name: 'Llagono',
-  // },
-  // {
-  //   status: 'new',
-  //   employee_number: '12479',
-  //   last_name: 'Zonio',
-  //   first_name: 'Rowel',
-  //   middle_name: 'Cortez',
-  // },
-  // {
-  //   status: 'new',
-  //   employee_number: '12496',
-  //   last_name: 'Ilagan',
-  //   first_name: 'Anthony',
-  //   middle_name: 'Palabrica',
-  // },
-  // {
-  //   status: 'new',
-  //   employee_number: '12500',
-  //   last_name: 'Ocson',
-  //   first_name: 'Rachel-Lyn',
-  //   middle_name: 'Añonuevo',
-  // },
-  // {
-  //   status: 'new',
-  //   employee_number: '12562',
-  //   last_name: 'Geli',
-  //   first_name: 'Ryan Jay',
-  //   middle_name: 'Valdez',
-  // },
-  // {
-  //   status: 'new',
-  //   employee_number: '12686',
-  //   last_name: 'Labadlabad',
-  //   first_name: 'Anjenette',
-  //   middle_name: 'Cabique',
-  // },
-  // {
-  //   status: 'new',
-  //   employee_number: '12818',
-  //   last_name: 'Pangilinan',
-  //   first_name: 'Jerome',
-  //   middle_name: 'Talenjale',
-  // },
-  // {
-  //   status: 'new',
-  //   employee_number: '12852',
-  //   last_name: 'Macaspac',
-  //   first_name: 'King',
-  //   middle_name: 'Cruz',
-  // },
-  // {
-  //   status: 'new',
-  //   employee_number: '12853',
-  //   last_name: 'Nabayra',
-  //   first_name: 'Kevin Jay',
-  //   middle_name: 'Peña',
-  // },
-  // {
-  //   status: 'new',
-  //   employee_number: '12908',
-  //   last_name: 'Zonio',
-  //   first_name: 'Ellienite',
-  //   middle_name: 'Cortes',
-  // },
-  // {
-  //   status: 'new',
-  //   employee_number: '12910',
-  //   last_name: 'Horlador',
-  //   first_name: 'Jary',
-  //   middle_name: 'Hablero',
-  // },
+  {
+    status: 'new',
+    employee_number: '12092',
+    last_name: 'Cabato',
+    first_name: 'Romabel',
+    middle_name: 'Gozun',
+  },
+  {
+    status: 'new',
+    employee_number: '12137',
+    last_name: 'Tiongco',
+    first_name: 'Gilbert',
+    middle_name: 'Masula',
+  },
+  {
+    status: 'new',
+    employee_number: '12149',
+    last_name: 'Bartolome',
+    first_name: 'Elmer',
+    middle_name: 'Espiritu',
+  },
+  {
+    status: 'new',
+    employee_number: '12166',
+    last_name: 'Jamero',
+    first_name: 'Menandro',
+    middle_name: 'Baserto',
+  },
+  {
+    status: 'new',
+    employee_number: '12202',
+    last_name: 'Gallentes',
+    first_name: 'Elsen Hower',
+    middle_name: 'Celis',
+  },
+  {
+    status: 'new',
+    employee_number: '12235',
+    last_name: 'Duatin',
+    first_name: 'Maria Katrina',
+    middle_name: 'De Guzman',
+  },
+  {
+    status: 'new',
+    employee_number: '12249',
+    last_name: 'Viernes',
+    first_name: 'Keivin',
+    middle_name: 'Siobal',
+  },
+  {
+    status: 'new',
+    employee_number: '12259',
+    last_name: 'Magat',
+    first_name: 'Reynaldo',
+    middle_name: 'Sebastian',
+  },
+  {
+    status: 'new',
+    employee_number: '12262',
+    last_name: 'Pamat',
+    first_name: 'Marlyn',
+    middle_name: 'Oroceo',
+  },
+  {
+    status: 'new',
+    employee_number: '12280',
+    last_name: 'Mendoza',
+    first_name: 'Donnalyn',
+    middle_name: 'Mayo',
+  },
+  {
+    status: 'new',
+    employee_number: '12298',
+    last_name: 'Caparas',
+    first_name: 'Mary Ann',
+    middle_name: 'Galarse',
+  },
+  {
+    status: 'new',
+    employee_number: '12301',
+    last_name: 'Caño',
+    first_name: 'Rachel',
+    middle_name: 'Pamat',
+  },
+  {
+    status: 'new',
+    employee_number: '12303',
+    last_name: 'Amancio',
+    first_name: 'Jonalyn',
+    middle_name: 'Romano',
+  },
+  {
+    status: 'new',
+    employee_number: '12345',
+    last_name: 'Pindos',
+    first_name: 'Reynaldo',
+    middle_name: 'Aparri',
+  },
+  {
+    status: 'new',
+    employee_number: '12466',
+    last_name: 'Celis',
+    first_name: 'Neriza',
+    middle_name: 'Llagono',
+  },
+  {
+    status: 'new',
+    employee_number: '12479',
+    last_name: 'Zonio',
+    first_name: 'Rowel',
+    middle_name: 'Cortez',
+  },
+  {
+    status: 'new',
+    employee_number: '12496',
+    last_name: 'Ilagan',
+    first_name: 'Anthony',
+    middle_name: 'Palabrica',
+  },
+  {
+    status: 'new',
+    employee_number: '12500',
+    last_name: 'Ocson',
+    first_name: 'Rachel-Lyn',
+    middle_name: 'Añonuevo',
+  },
+  {
+    status: 'new',
+    employee_number: '12562',
+    last_name: 'Geli',
+    first_name: 'Ryan Jay',
+    middle_name: 'Valdez',
+  },
+  {
+    status: 'new',
+    employee_number: '12686',
+    last_name: 'Labadlabad',
+    first_name: 'Anjenette',
+    middle_name: 'Cabique',
+  },
+  {
+    status: 'new',
+    employee_number: '12818',
+    last_name: 'Pangilinan',
+    first_name: 'Jerome',
+    middle_name: 'Talenjale',
+  },
+  {
+    status: 'new',
+    employee_number: '12852',
+    last_name: 'Macaspac',
+    first_name: 'King',
+    middle_name: 'Cruz',
+  },
+  {
+    status: 'new',
+    employee_number: '12853',
+    last_name: 'Nabayra',
+    first_name: 'Kevin Jay',
+    middle_name: 'Peña',
+  },
+  {
+    status: 'new',
+    employee_number: '12908',
+    last_name: 'Zonio',
+    first_name: 'Ellienite',
+    middle_name: 'Cortes',
+  },
+  {
+    status: 'new',
+    employee_number: '12910',
+    last_name: 'Horlador',
+    first_name: 'Jary',
+    middle_name: 'Hablero',
+  },
 ];

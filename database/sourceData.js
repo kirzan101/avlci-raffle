@@ -9,16 +9,17 @@ export async function initiateSourceDafults() {
     'source TEXT ' +
     ')';
 
-  const response = await db.transactionAsync(async (tx) => {
+  await db.transactionAsync(async (tx) => {
     await tx.executeSqlAsync(sql, [], (tx, results) => {
       console.log(results);
     });
 
     // console.log('result here', result)
   });
-  console.log('defaults response', response);
-  return response;
+
+  return;
 }
+
 
 export async function storeDefaults(request) {
   await db.transactionAsync(async (tx) => {

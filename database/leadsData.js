@@ -27,17 +27,15 @@ export async function initiateLead() {
     'is_uploaded TEXT' +
     ')';
 
-  const response = await db.transactionAsync(async (tx) => {
-    await tx.executeSqlAsync(sql, [], (tx, results) => {
-      console.log(results);
-    });
+  await db.transactionAsync(async (tx) => {
+    await tx.executeSqlAsync(sql, [], (tx, results) => {});
   });
 
-  return response;
+  return;
 }
 
 export async function leadsFetch() {
-  // initiateLead();
+  await initiateLead();
 
   // add remarks column here
   const count = await checkColumnExists('leads', 'remarks');
@@ -57,7 +55,7 @@ export async function leadsFetch() {
     });
   } catch (error) {
     console.log(error, 'error');
-    initiateLead();
+    await initiateLead();
   }
 
   return leads;
@@ -79,7 +77,7 @@ export async function unUploadedleadsFetch() {
     });
   } catch (error) {
     console.log(error, 'error');
-    initiateLead();
+    await initiateLead();
   }
   return leads;
 }
@@ -222,7 +220,7 @@ export async function showLeadDataAsync(id) {
     });
   } catch (error) {
     console.log(error, 'error');
-    initiateLead();
+    await initiateLead();
   }
 
   return lead;
