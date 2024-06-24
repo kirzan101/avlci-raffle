@@ -37,7 +37,7 @@ function leadValidation(request) {
     },
     address: {
       value: request.address,
-      isValid: true,
+      isValid: addressIsValid,
     },
     hotel: {
       value: request.hotel,
@@ -51,7 +51,7 @@ function leadValidation(request) {
       value: request.occupation,
       isValid: occupationIsValid,
     },
-    age: { value: request.age, isValid: ageIsValid },
+    age: { value: request.age, isValid: true },
     source_prefix: {
       value: request.source,
       isValid: sourceIsValid,
@@ -84,7 +84,7 @@ function leadValidation(request) {
     !mobileNumberIsValid ||
     !occupationIsValid ||
     !addressIsValid ||
-    !ageIsValid ||
+    // !ageIsValid ||
     !civilStatusIsValid ||
     !sourceIsValid
   ) {

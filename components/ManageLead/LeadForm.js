@@ -213,7 +213,9 @@ function LeadForm({
 
   return (
     <View style={styles.form}>
-      <Text style={styles.title}>Complimentary buffet</Text>
+      <Text style={styles.title}>Complimentary buffet availment</Text>
+      <Text style={styles.noteText}>This gives AVLCI the authority to process the personal information.</Text>
+      <Text style={styles.noteText}>I have given them for their comnpany's purpose.</Text>
       <Input
         label="First Name"
         isInvalid={isInvalid && !inputs.first_name.isValid}
@@ -353,7 +355,6 @@ function LeadForm({
       <Input
         label="Age"
         isInvalid={isInvalid && !inputs.age.isValid}
-        isRequired={true}
         textInputConfig={{
           keyboardType: 'numeric',
           maxLength: 3,
@@ -446,6 +447,12 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: 'bold',
     marginVertical: 12,
+    textAlign: 'center',
+  },
+  noteText: {
+    fontSize: 10,
+    fontStyle: 'italic',
+    fontWeight: 'normal',
     textAlign: 'center',
   },
   buttons: {

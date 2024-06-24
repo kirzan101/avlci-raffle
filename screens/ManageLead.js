@@ -44,7 +44,6 @@ function ManageLead({ route, navigation }) {
     async function getSourceDefaultsValue() {
       const defaultResult = await getSourceDefaults();
       setDefaultSource(defaultResult);
-      console.log(defaultSource, 'defaultResult');
     }
 
     unsubscribe();

@@ -2,8 +2,15 @@ import { useState } from 'react';
 import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 import Button from './Button';
 import { GlobalStyles } from '../../constants/styles';
+import SpinningIcon from './SpinningIcon';
 
-function ConfirmationModal({ openModal, closeModal, confirmModal, message, btnStatus }) {
+function ConfirmationModal({
+  openModal,
+  closeModal,
+  confirmModal,
+  message,
+  btnStatus,
+}) {
   const [modalVisible, setModalVisible] = useState(false);
 
   function closed() {
@@ -41,7 +48,11 @@ function ConfirmationModal({ openModal, closeModal, confirmModal, message, btnSt
               disabled={btnStatus}
               onPress={() => confirm()}
             >
-              <Text style={styles.textStyle}>Confirm</Text>
+              {btnStatus ? (
+                <SpinningIcon />
+              ) : (
+                <Text style={styles.textStyle}>Confirm</Text>
+              )}
             </Pressable>
           </View>
         </View>
@@ -59,7 +70,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 22,
     // backgroundColor: 'rgba(0, 255, 0, 0.5)'
-    backgroundColor: 'rgba(241, 240, 234, 0.5)'
+    backgroundColor: 'rgba(241, 240, 234, 0.5)',
   },
   modalView: {
     margin: 20,

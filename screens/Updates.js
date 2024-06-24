@@ -14,6 +14,8 @@ import ConfirmationModal from '../components/UI/ConfirmationModal';
 import NetInfo from '@react-native-community/netinfo';
 import { GlobalStyles } from '../constants/styles';
 import { name, version } from '../package.json';
+import { Ionicons } from '@expo/vector-icons';
+import SpinningIcon from '../components/UI/SpinningIcon';
 
 function UploadLeads() {
   const [isConnected, setIsConnected] = useState(false);
@@ -94,7 +96,7 @@ function UploadLeads() {
               disabled={btnStatus}
               onPress={updateAgentsHandler}
             >
-              Update Agents
+              {btnStatus ? <SpinningIcon /> : 'Update Agents'}
             </Button>
           </View>
         )}
