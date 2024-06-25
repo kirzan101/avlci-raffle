@@ -6,6 +6,10 @@ const db = openDatabase('opc_leads');
 // dropTable();
 
 export async function initiateLead() {
+  // await db.transactionAsync(async (tx) => {
+  //   await tx.executeSqlAsync('DROP TABLE IF EXISTS leads', []);
+  // });
+
   const sql =
     'CREATE TABLE IF NOT EXISTS leads (' +
     'id INTEGER PRIMARY KEY AUTOINCREMENT, ' +
@@ -24,7 +28,8 @@ export async function initiateLead() {
     'source TEXT, ' +
     'civil_status TEXT, ' +
     'created_at TEXT,' +
-    'is_uploaded TEXT' +
+    'is_uploaded TEXT,' +
+    'random_code TEXT' +
     ')';
 
   await db.transactionAsync(async (tx) => {
@@ -105,9 +110,10 @@ export async function insertLeadData(request) {
           'civil_status, ' +
           'is_uploaded, ' +
           'remarks, ' +
+          'random_code, ' +
           'created_at' +
           ') ' +
-          'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+          'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
         [
           request.first_name,
           request.middle_name,
@@ -125,6 +131,7 @@ export async function insertLeadData(request) {
           request.civil_status,
           request.is_uploaded,
           request.remarks,
+          request.random_code,
           request.created_at.toString(),
         ]
       );
@@ -160,6 +167,7 @@ export async function updateLeadData(id, request) {
           'civil_status = ?, ' +
           'is_uploaded = ? ' +
           'remarks = ? ' +
+          'random_code = ? ' +
           'WHERE id = ?',
         [
           request.first_name,
@@ -178,6 +186,7 @@ export async function updateLeadData(id, request) {
           request.civil_status,
           request.is_uploaded,
           request.remarks,
+          request.random_code,
           id,
         ]
       );

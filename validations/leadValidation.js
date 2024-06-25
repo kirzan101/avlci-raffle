@@ -76,6 +76,10 @@ function leadValidation(request) {
       value: request.created_at,
       isValid: true,
     },
+    random_code: {
+      value: request.random_code,
+      isValid: true,
+    },
   };
 
   if (

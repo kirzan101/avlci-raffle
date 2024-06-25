@@ -4,9 +4,21 @@ import { Ionicons } from '@expo/vector-icons';
 
 import { GlobalStyles } from '../../constants/styles';
 import { useNavigation } from '@react-navigation/native';
+import { useState } from 'react';
+import QRResultModal from '../UI/QRResultModal';
 
-function LeadsItem({ id, first_name, last_name, created_at, is_uploaded }) {
+function LeadsItem({
+  id,
+  first_name,
+  last_name,
+  created_at,
+  is_uploaded,
+  source,
+  random_code,
+}) {
   const navigation = useNavigation();
+  const [modalVisible, setModalVisible] = useState(false);
+  const qrModalMessage = `${last_name}, ${first_name}`;
 
   function leadPressHandler() {
     navigation.navigate('ManageLead', {
@@ -14,46 +26,57 @@ function LeadsItem({ id, first_name, last_name, created_at, is_uploaded }) {
     });
   }
 
+  function showQrModal() {
+    setModalVisible(true);
+    return;
+  }
+
+  function closeQrModal() {
+    setModalVisible(false);
+    return;
+  }
+
   return (
-    <Pressable
-      onPress={leadPressHandler}
-      style={({ pressed }) => pressed && styles.pressed}
-    >
-      <View style={styles.leadItem}>
-        <Text style={styles.textContainer}>
-          {last_name}, {first_name}
-          {is_uploaded == 'true' && (
-            <Ionicons
-              name="checkmark-circle-outline"
-              size={12}
-              color={'green'}
-              style={styles.iconCheckContainer}
-            />
-          )}
-        </Text>
+    <View style={styles.leadItem}>
+      <QRResultModal
+        openModal={modalVisible}
+        closeModal={closeQrModal}
+        message={qrModalMessage}
+        employeeNumber={source}
+        randomAlphaNumeric={random_code}
+      />
+      <Pressable
+        onPress={leadPressHandler}
+        style={({ pressed }) => pressed && styles.pressed}
+      >
         <View style={styles.createdContainer}>
-          <Text style={styles.createdText}>
-            <Ionicons
-              name="calendar"
-              size={24}
-              color={'green'}
-              style={styles.iconContainer}
-            />
-            {/* {getFormattedDate(convertToDate(created_at))} */}
-            {getFormattedDate(convertToDate(created_at))}
+          <Text style={styles.textContainer}>
+            {last_name}, {first_name}
+            {is_uploaded == 'true' && (
+              <Ionicons
+                name="checkmark-circle"
+                size={14}
+                color={'green'}
+                style={styles.iconCheckContainer}
+              />
+            )}
           </Text>
           <Text style={styles.createdText}>
-            <Ionicons
-              name="time"
-              size={24}
-              color={'green'}
-              style={styles.iconContainer}
-            />
+            {getFormattedDate(convertToDate(created_at))}{' '}
             {getTime(convertToDate(created_at))}
           </Text>
         </View>
-      </View>
-    </Pressable>
+      </Pressable>
+
+      <Pressable
+        onPress={showQrModal}
+        style={({ pressed }) => pressed && styles.pressed}
+      >
+        <View>
+          <Ionicons name="qr-code-outline" size={60} color={'green'} />
+        </View>
+      </Pressable>
+    </View>
   );
 }
 
@@ -71,6 +94,7 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     borderWidth: 1,
     borderColor: GlobalStyles.colors.primary100,
+    width: 'auto',
   },
   createdContainer: {
     flexDirection: 'column',

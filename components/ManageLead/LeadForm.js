@@ -21,7 +21,6 @@ function LeadForm({
   onSubmit,
   defaultValues,
   isEditing,
-  defaultSource,
 }) {
   const today = new Date();
   const [inputs, setInputs] = useState({
@@ -99,6 +98,10 @@ function LeadForm({
         : '',
       isValid: !!defaultValues,
     },
+    random_code: {
+      value: defaultValues ? defaultValues.random_code?.toString() : '',
+      isValid: !!defaultValues,
+    },
   });
 
   const civil_statuses = [
@@ -131,12 +134,12 @@ function LeadForm({
     try {
       const response = await getAgents();
       // const data = await response.json();
-      const mappedAgent = response.map(agent => {
+      const mappedAgent = response.map((agent) => {
         return {
           label: `${agent.last_name}, ${agent.first_name}`,
-          value: agent.employee_number
-        }
-      })
+          value: agent.employee_number,
+        };
+      });
 
       setAgents([...mappedAgent]);
     } catch (error) {
@@ -175,7 +178,20 @@ function LeadForm({
     });
   }
 
+  function generateRandomAlphanumeric(length) {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let result = '';
+    const charactersLength = characters.length;
+
+    for (let i = 0; i < length; i++) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+
+    return result;
+  }
+
   const [isInvalid, setIsInvalid] = useState(false);
+  const randomCode = generateRandomAlphanumeric(6);
 
   function submitHandler() {
     const leadsData = {
@@ -195,6 +211,7 @@ function LeadForm({
       civil_status: inputs.civil_status.value.trim(),
       remarks: inputs.remarks.value.trim(),
       is_uploaded: 'false',
+      random_code: randomCode,
       created_at: today,
     };
 
@@ -214,8 +231,12 @@ function LeadForm({
   return (
     <View style={styles.form}>
       <Text style={styles.title}>Complimentary buffet availment</Text>
-      <Text style={styles.noteText}>This gives AVLCI the authority to process the personal information.</Text>
-      <Text style={styles.noteText}>I have given them for their comnpany's purpose.</Text>
+      <Text style={styles.noteText}>
+        This gives AVLCI the authority to process the personal information.
+      </Text>
+      <Text style={styles.noteText}>
+        I have given them for their comnpany's purpose.
+      </Text>
       <Input
         label="First Name"
         isInvalid={isInvalid && !inputs.first_name.isValid}

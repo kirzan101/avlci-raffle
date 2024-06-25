@@ -133,6 +133,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     borderBottomWidth: 1,
     width: '50%',
+    borderBottomColor: GlobalStyles.colors.primary200
     // borderWidth: 1,
   },
 });

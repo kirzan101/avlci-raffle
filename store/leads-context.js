@@ -20,6 +20,7 @@ export const LeadsContext = createContext({
     civil_status,
     remarks,
     is_uploaded,
+    random_code,
     created_at,
   }) => {},
   setLeads: (leads) => {},
@@ -43,6 +44,7 @@ export const LeadsContext = createContext({
       civil_status,
       remarks,
       is_uploaded,
+      random_code,
       created_at,
     }
   ) => {},

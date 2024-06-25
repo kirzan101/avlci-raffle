@@ -20,36 +20,50 @@ export async function initiateSourceDafults() {
   return;
 }
 
-
 export async function storeDefaults(request) {
-  await db.transactionAsync(async (tx) => {
-    await tx.executeSqlAsync(
-      'INSERT INTO defaults (source_prefix, source) VALUES (?, ?)',
-      [request.source_prefix, request.source]
-    );
-  });
+  console.log('source insert here', request.source_prefix, request.source);
+  // await db.transactionAsync(async (tx) => {
+  //   await tx.executeSqlAsync(
+  //     'INSERT INTO source_defaults (source_prefix, source) VALUES (?, ?)',
+  //     [request.source_prefix, request.source]
+  //   );
+  // });
+
+  const sourceData = await getSourceDefaults();
+
+  if (sourceData.source.length > 0) {
+    // create new record
+    await db.transactionAsync(async (tx) => {
+      await tx.executeSqlAsync(
+        'INSERT INTO source_defaults (source_prefix, source) VALUES (?, ?)',
+        [request.source_prefix, request.source]
+      );
+    });
+  } else {
+    // update if there is already a record
+    await updateDafaults(request);
+  }
 }
 
 export async function updateDafaults(request) {
   await db.transactionAsync(async (tx) => {
     await tx.executeSqlAsync(
-      'UPDATE defaults SET source_prefix = ?, source = ? WHERE id = 1',
+      'UPDATE source_defaults SET source_prefix = ?, source = ? WHERE id = 1',
       [request.source_prefix, request.source]
     );
   });
 }
 
 export async function getSourceDefaults() {
-//   initiateSourceDafults();
+  initiateSourceDafults();
   const defaults = [];
 
   try {
     await db.transactionAsync(async (tx) => {
       const results = await tx.executeSqlAsync(
-        'SELECT * FROM defaults WHERE id = 1',
+        'SELECT * FROM source_defaults ORDER BY Id DESC LIMIT 1',
         []
       );
-
       for (let index = 0; index < results.rows.length; index++) {
         defaults.push(results.rows[index]);
       }
@@ -64,8 +78,10 @@ export async function getSourceDefaults() {
       source_prefix: defaults[0].source_prefix,
       source: defaults[0].source,
     };
+    // return defaults;
   }
 
+  // return [];
   return {
     source_prefix: '',
     source: '',

@@ -18,11 +18,17 @@ import {
 } from '../database/sourceData';
 import { storeLead } from '../util/http';
 import NetInfo from '@react-native-community/netinfo';
+import QRResultModal from '../components/UI/QRResultModal';
 
 function ManageLead({ route, navigation }) {
   const leadsCtx = useContext(LeadsContext);
   const [isConnected, setIsConnected] = useState(false);
   const [defaultSource, setDefaultSource] = useState({});
+  const [modalVisible, setModalVisible] = useState(false);
+  const [btnStatus, setBtnStatus] = useState(false);
+  const [employeeNumber, setEmployeeNumber] = useState('');
+  const [randomCode, setRandomCode] = useState('');
+  const [modalMessage, setModalMessage] = useState('');
 
   const editedLeadId = route.params?.leadId;
   const isEditing = !!editedLeadId; // '!!' converts to boolean
@@ -42,8 +48,8 @@ function ManageLead({ route, navigation }) {
 
     // defaults here
     async function getSourceDefaultsValue() {
-      const defaultResult = await getSourceDefaults();
-      setDefaultSource(defaultResult);
+      // const defaultResult = await getSourceDefaults();
+      // setDefaultSource(defaultResult);
     }
 
     unsubscribe();
@@ -78,8 +84,23 @@ function ManageLead({ route, navigation }) {
     navigation.goBack();
   }
 
+  function generateRandomAlphanumeric(length) {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let result = '';
+    const charactersLength = characters.length;
+
+    for (let i = 0; i < length; i++) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+
+    return result;
+  }
+
   async function confirmHandler(leadsData) {
     const onlineLeadData = leadsData;
+
+    setEmployeeNumber(leadsData.source); //source here is the employee/agent number
+    setRandomCode(leadsData.random_code);
 
     if (isEditing) {
       // update to local
@@ -93,6 +114,8 @@ function ManageLead({ route, navigation }) {
         { text: 'OK', onPress: () => navigation.goBack() },
       ]);
     } else {
+      // await storeDefaults(leadsData);
+
       // submit online
       if (isConnected) {
         try {
@@ -116,16 +139,32 @@ function ManageLead({ route, navigation }) {
       // add to local
       leadsCtx.addLead(leadsData);
 
-      const message = insertedId > 0 ? 'Successfully Added!' : 'Invalid form.';
-
-      Alert.alert('Notice:', message, [
-        { text: 'OK', onPress: () => navigation.goBack() },
-      ]);
+      if (insertedId > 0) {
+        setModalMessage('Successfully Added!');
+        setModalVisible(true);
+      } else {
+        Alert.alert('Notice:', 'Invalid form.', [
+          { text: 'OK', onPress: () => navigation.goBack() },
+        ]);
+      }
     }
+  }
+
+  function closeModalHandle() {
+    setModalVisible(false);
+    navigation.goBack();
+    // setBtnStatus();
   }
 
   return (
     <View style={styles.container}>
+      <QRResultModal
+        openModal={modalVisible}
+        closeModal={closeModalHandle}
+        message={modalMessage}
+        employeeNumber={employeeNumber}
+        randomAlphaNumeric={randomCode}
+      />
       <ScrollView>
         <LeadForm
           submitButtonLabel={isEditing ? 'Update' : 'Add'}
