@@ -1,48 +1,43 @@
 import { openDatabase } from 'expo-sqlite';
-const db = openDatabase('source_defaults');
+const db = openDatabase('sources');
 
-export async function initiateSourceDafults() {
+export async function initiateSourceDefaults() {
   const sql =
-    'CREATE TABLE IF NOT EXISTS defaults(' +
+    'CREATE TABLE IF NOT EXISTS source_defaults(' +
     'id INTEGER PRIMARY KEY AUTOINCREMENT, ' +
     'source_prefix TEXT, ' +
     'source TEXT ' +
     ')';
 
   await db.transactionAsync(async (tx) => {
-    await tx.executeSqlAsync(sql, [], (tx, results) => {
-      console.log(results);
-    });
-
-    // console.log('result here', result)
+    await tx.executeSqlAsync(sql, [], () => {});
   });
 
   return;
 }
 
 export async function storeDefaults(request) {
-  console.log('source insert here', request.source_prefix, request.source);
-  // await db.transactionAsync(async (tx) => {
-  //   await tx.executeSqlAsync(
-  //     'INSERT INTO source_defaults (source_prefix, source) VALUES (?, ?)',
-  //     [request.source_prefix, request.source]
-  //   );
-  // });
-
   const sourceData = await getSourceDefaults();
 
-  if (sourceData.source.length > 0) {
+  if (sourceData.length > 0) {
+    // update if there is already a record
+    await updateDafaults(request);
+
+    // console.log('updated source', sourceData);
+  } else {
+    let result = '';
     // create new record
     await db.transactionAsync(async (tx) => {
-      await tx.executeSqlAsync(
+      result = await tx.executeSqlAsync(
         'INSERT INTO source_defaults (source_prefix, source) VALUES (?, ?)',
         [request.source_prefix, request.source]
       );
     });
-  } else {
-    // update if there is already a record
-    await updateDafaults(request);
+
+    // console.log('created source');
   }
+
+  return;
 }
 
 export async function updateDafaults(request) {
@@ -55,13 +50,13 @@ export async function updateDafaults(request) {
 }
 
 export async function getSourceDefaults() {
-  initiateSourceDafults();
+  await initiateSourceDefaults();
   const defaults = [];
 
   try {
     await db.transactionAsync(async (tx) => {
       const results = await tx.executeSqlAsync(
-        'SELECT * FROM source_defaults ORDER BY Id DESC LIMIT 1',
+        'SELECT * FROM source_defaults ORDER BY Id DESC',
         []
       );
       for (let index = 0; index < results.rows.length; index++) {
@@ -69,21 +64,12 @@ export async function getSourceDefaults() {
       }
     });
   } catch (error) {
-    console.log(error, 'error on default fetch');
-    initiateSourceDafults();
+    await initiateSourceDefaults();
   }
 
   if (defaults.length > 0) {
-    return {
-      source_prefix: defaults[0].source_prefix,
-      source: defaults[0].source,
-    };
-    // return defaults;
+    return defaults;
   }
 
-  // return [];
-  return {
-    source_prefix: '',
-    source: '',
-  };
+  return defaults;
 }

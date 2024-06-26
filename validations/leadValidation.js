@@ -80,6 +80,10 @@ function leadValidation(request) {
       value: request.random_code,
       isValid: true,
     },
+    code_name: {
+      value: request.code_name,
+      isValid: true,
+    },
   };
 
   if (

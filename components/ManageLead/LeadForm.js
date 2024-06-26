@@ -21,8 +21,19 @@ function LeadForm({
   onSubmit,
   defaultValues,
   isEditing,
+  defaultSource,
 }) {
   const today = new Date();
+  // const [defaultSources, setDefaultSources] = useState([]);
+  // console.log('defaultSource here', defaultSource)
+  useEffect(() => {
+    const initializeData = async () => {
+      await agent_list();
+    };
+
+    initializeData();
+  }, []);
+
   const [inputs, setInputs] = useState({
     first_name: {
       value: defaultValues ? defaultValues.first_name?.toString() : '',
@@ -102,7 +113,30 @@ function LeadForm({
       value: defaultValues ? defaultValues.random_code?.toString() : '',
       isValid: !!defaultValues,
     },
+    code_name: {
+      value: defaultValues ? defaultValues.code_name?.toString() : '',
+      isValid: !!defaultValues,
+    },
   });
+
+  //defaults here
+  if (defaultSource.length > 0 && inputs.source.value.length === 0) {
+    setInputs((currentInputs) => {
+      return {
+        ...currentInputs,
+        source: { value: defaultSource[0].source, isValid: true },
+      };
+    });
+  }
+
+  if (defaultSource.length > 0 && inputs.source_prefix.value.length === 0) {
+    setInputs((currentInputs) => {
+      return {
+        ...currentInputs,
+        source_prefix: { value: defaultSource[0].source_prefix, isValid: true },
+      };
+    });
+  }
 
   const civil_statuses = [
     { label: 'Single', value: 'Single' },
@@ -146,14 +180,6 @@ function LeadForm({
       console.error('Error fetching data:', error);
     }
   };
-
-  useEffect(() => {
-    const initializeData = async () => {
-      await agent_list();
-    };
-
-    initializeData();
-  }, []);
 
   // console.log('agentList', agent_list());
 
@@ -212,6 +238,7 @@ function LeadForm({
       remarks: inputs.remarks.value.trim(),
       is_uploaded: 'false',
       random_code: randomCode,
+      code_name: '',
       created_at: today,
     };
 

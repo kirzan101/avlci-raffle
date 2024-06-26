@@ -16,18 +16,19 @@ import {
   storeDefaults,
   updateDafaults,
 } from '../database/sourceData';
-import { storeLead } from '../util/http';
+import { getAgent, storeLead } from '../util/http';
 import NetInfo from '@react-native-community/netinfo';
 import QRResultModal from '../components/UI/QRResultModal';
 
 function ManageLead({ route, navigation }) {
   const leadsCtx = useContext(LeadsContext);
   const [isConnected, setIsConnected] = useState(false);
-  const [defaultSource, setDefaultSource] = useState({});
+  const [defaultSource, setDefaultSource] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [btnStatus, setBtnStatus] = useState(false);
   const [employeeNumber, setEmployeeNumber] = useState('');
   const [randomCode, setRandomCode] = useState('');
+  const [codeName, setCodeName] = useState('');
   const [modalMessage, setModalMessage] = useState('');
 
   const editedLeadId = route.params?.leadId;
@@ -46,14 +47,13 @@ function ManageLead({ route, navigation }) {
       setIsConnected(state.isConnected);
     });
 
-    // defaults here
-    async function getSourceDefaultsValue() {
-      // const defaultResult = await getSourceDefaults();
-      // setDefaultSource(defaultResult);
-    }
+    const initializeData = async () => {
+      const defaultResult = await getSourceDefaults();
+      setDefaultSource(defaultResult);
+    };
 
     unsubscribe();
-    getSourceDefaultsValue();
+    initializeData();
   }, []);
 
   async function deleteLeadHandler() {
@@ -84,18 +84,6 @@ function ManageLead({ route, navigation }) {
     navigation.goBack();
   }
 
-  function generateRandomAlphanumeric(length) {
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    let result = '';
-    const charactersLength = characters.length;
-
-    for (let i = 0; i < length; i++) {
-      result += characters.charAt(Math.floor(Math.random() * charactersLength));
-    }
-
-    return result;
-  }
-
   async function confirmHandler(leadsData) {
     const onlineLeadData = leadsData;
 
@@ -114,7 +102,9 @@ function ManageLead({ route, navigation }) {
         { text: 'OK', onPress: () => navigation.goBack() },
       ]);
     } else {
-      // await storeDefaults(leadsData);
+      const codeNameResult = await getAgent(leadsData.source);
+      setCodeName(codeNameResult);
+      leadsData.code_name = codeNameResult;
 
       // submit online
       if (isConnected) {
@@ -140,6 +130,7 @@ function ManageLead({ route, navigation }) {
       leadsCtx.addLead(leadsData);
 
       if (insertedId > 0) {
+        storeDefaults(leadsData);
         setModalMessage('Successfully Added!');
         setModalVisible(true);
       } else {
@@ -164,6 +155,7 @@ function ManageLead({ route, navigation }) {
         message={modalMessage}
         employeeNumber={employeeNumber}
         randomAlphaNumeric={randomCode}
+        codeName={codeName}
       />
       <ScrollView>
         <LeadForm

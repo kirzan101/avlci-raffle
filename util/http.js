@@ -159,6 +159,7 @@ export async function localAgentsInitiate() {
     'middle_name TEXT, ' +
     'last_name TEXT, ' +
     'employee_number TEXT, ' +
+    'code_name TEXT, ' +
     'status TEXT ' +
     ')';
 
@@ -179,6 +180,7 @@ export async function localAgentsInitiate() {
     // return current agents here
     return localAgentDatas;
   } else {
+    console.log('defaultAgents', defaultAgents)
     // create default agents
     await bulkInsertAgents(defaultAgents);
   }
@@ -231,14 +233,16 @@ const bulkInsertAgents = async (agents) => {
         (tx) => {
           agents.forEach(async (agent) => {
             try {
+              console.log(agent, 'agent here');
               await executeSqlAsync(
                 tx,
-                'INSERT INTO agents (first_name, middle_name, last_name, employee_number, status) VALUES (?,?,?,?,?)',
+                'INSERT INTO agents (first_name, middle_name, last_name, employee_number, code_name, status) VALUES (?,?,?,?,?,?)',
                 [
                   agent.first_name,
                   agent.middle_name,
                   agent.last_name,
                   agent.employee_number,
+                  agent.code_name,
                   'new',
                 ]
               );
@@ -279,6 +283,25 @@ export async function getAgents() {
   return defaultAgents;
 }
 
+export async function getAgent(employee_number) {
+  //initiate agent data;
+  const localAgentDatas = await localAgentsInitiate();
+
+  if (localAgentDatas.length > 0) {
+    // return localAgentDatas;
+    const agent = localAgentDatas.find(
+      (agent) => agent.employee_number === employee_number
+    );
+
+    if (agent) {
+      return agent.code_name;
+    }
+    return '';
+  }
+
+  return null;
+}
+
 export async function updateLocalAgents() {
   // await localAgentsInitiate();
 
@@ -308,6 +331,7 @@ export async function updateLocalAgents() {
         last_name: agent.last_name,
         employee_number: agent.employee_number,
         status: 'new',
+        code_name: agent.code_name,
       };
     });
 
@@ -325,6 +349,7 @@ export async function updateLocalAgents() {
 const defaultAgents = [
   {
     status: 'new',
+    code_name: '',
     employee_number: '12049',
     last_name: 'Asuncion',
     first_name: 'Allan',
@@ -332,6 +357,7 @@ const defaultAgents = [
   },
   {
     status: 'new',
+    code_name: '',
     employee_number: '12053',
     last_name: 'Bohol',
     first_name: 'Marianet',
@@ -339,6 +365,7 @@ const defaultAgents = [
   },
   {
     status: 'new',
+    code_name: '',
     employee_number: '12079',
     last_name: 'Ariel',
     first_name: 'Odeth',
@@ -346,6 +373,7 @@ const defaultAgents = [
   },
   {
     status: 'new',
+    code_name: '',
     employee_number: '12092',
     last_name: 'Cabato',
     first_name: 'Romabel',
@@ -353,6 +381,7 @@ const defaultAgents = [
   },
   {
     status: 'new',
+    code_name: '',
     employee_number: '12137',
     last_name: 'Tiongco',
     first_name: 'Gilbert',
@@ -360,6 +389,7 @@ const defaultAgents = [
   },
   {
     status: 'new',
+    code_name: '',
     employee_number: '12149',
     last_name: 'Bartolome',
     first_name: 'Elmer',
@@ -367,6 +397,7 @@ const defaultAgents = [
   },
   {
     status: 'new',
+    code_name: '',
     employee_number: '12166',
     last_name: 'Jamero',
     first_name: 'Menandro',
@@ -374,6 +405,7 @@ const defaultAgents = [
   },
   {
     status: 'new',
+    code_name: '',
     employee_number: '12202',
     last_name: 'Gallentes',
     first_name: 'Elsen Hower',
@@ -381,6 +413,7 @@ const defaultAgents = [
   },
   {
     status: 'new',
+    code_name: '',
     employee_number: '12235',
     last_name: 'Duatin',
     first_name: 'Maria Katrina',
@@ -388,6 +421,7 @@ const defaultAgents = [
   },
   {
     status: 'new',
+    code_name: '',
     employee_number: '12249',
     last_name: 'Viernes',
     first_name: 'Keivin',
@@ -395,6 +429,7 @@ const defaultAgents = [
   },
   {
     status: 'new',
+    code_name: '',
     employee_number: '12259',
     last_name: 'Magat',
     first_name: 'Reynaldo',
@@ -402,6 +437,7 @@ const defaultAgents = [
   },
   {
     status: 'new',
+    code_name: '',
     employee_number: '12262',
     last_name: 'Pamat',
     first_name: 'Marlyn',
@@ -409,6 +445,7 @@ const defaultAgents = [
   },
   {
     status: 'new',
+    code_name: '',
     employee_number: '12280',
     last_name: 'Mendoza',
     first_name: 'Donnalyn',
@@ -416,6 +453,7 @@ const defaultAgents = [
   },
   {
     status: 'new',
+    code_name: '',
     employee_number: '12298',
     last_name: 'Caparas',
     first_name: 'Mary Ann',
@@ -423,6 +461,7 @@ const defaultAgents = [
   },
   {
     status: 'new',
+    code_name: '',
     employee_number: '12301',
     last_name: 'Caño',
     first_name: 'Rachel',
@@ -430,6 +469,7 @@ const defaultAgents = [
   },
   {
     status: 'new',
+    code_name: '',
     employee_number: '12303',
     last_name: 'Amancio',
     first_name: 'Jonalyn',
@@ -437,6 +477,7 @@ const defaultAgents = [
   },
   {
     status: 'new',
+    code_name: '',
     employee_number: '12345',
     last_name: 'Pindos',
     first_name: 'Reynaldo',
@@ -444,6 +485,7 @@ const defaultAgents = [
   },
   {
     status: 'new',
+    code_name: '',
     employee_number: '12466',
     last_name: 'Celis',
     first_name: 'Neriza',
@@ -451,6 +493,7 @@ const defaultAgents = [
   },
   {
     status: 'new',
+    code_name: '',
     employee_number: '12479',
     last_name: 'Zonio',
     first_name: 'Rowel',
@@ -458,6 +501,7 @@ const defaultAgents = [
   },
   {
     status: 'new',
+    code_name: '',
     employee_number: '12496',
     last_name: 'Ilagan',
     first_name: 'Anthony',
@@ -465,6 +509,7 @@ const defaultAgents = [
   },
   {
     status: 'new',
+    code_name: '',
     employee_number: '12500',
     last_name: 'Ocson',
     first_name: 'Rachel-Lyn',
@@ -472,6 +517,7 @@ const defaultAgents = [
   },
   {
     status: 'new',
+    code_name: '',
     employee_number: '12562',
     last_name: 'Geli',
     first_name: 'Ryan Jay',
@@ -479,6 +525,7 @@ const defaultAgents = [
   },
   {
     status: 'new',
+    code_name: '',
     employee_number: '12686',
     last_name: 'Labadlabad',
     first_name: 'Anjenette',
@@ -486,6 +533,7 @@ const defaultAgents = [
   },
   {
     status: 'new',
+    code_name: '',
     employee_number: '12818',
     last_name: 'Pangilinan',
     first_name: 'Jerome',
@@ -493,6 +541,7 @@ const defaultAgents = [
   },
   {
     status: 'new',
+    code_name: '',
     employee_number: '12852',
     last_name: 'Macaspac',
     first_name: 'King',
@@ -500,6 +549,7 @@ const defaultAgents = [
   },
   {
     status: 'new',
+    code_name: '',
     employee_number: '12853',
     last_name: 'Nabayra',
     first_name: 'Kevin Jay',
@@ -507,6 +557,7 @@ const defaultAgents = [
   },
   {
     status: 'new',
+    code_name: '',
     employee_number: '12908',
     last_name: 'Zonio',
     first_name: 'Ellienite',
@@ -514,6 +565,7 @@ const defaultAgents = [
   },
   {
     status: 'new',
+    code_name: '',
     employee_number: '12910',
     last_name: 'Horlador',
     first_name: 'Jary',

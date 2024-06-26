@@ -11,6 +11,7 @@ function QRResultModal({
   message,
   employeeNumber,
   randomAlphaNumeric,
+  codeName,
 }) {
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -35,9 +36,10 @@ function QRResultModal({
           <GeneratedQR
             employeeNumber={employeeNumber}
             randomAlphaNumeric={randomAlphaNumeric}
+            codeName={codeName}
           />
           <Text style={styles.modalText}>
-            AVLCI-{employeeNumber}-{randomAlphaNumeric}
+            AVLCI-{codeName}-{randomAlphaNumeric}
           </Text>
           <View style={styles.buttonPosition}>
             <Pressable

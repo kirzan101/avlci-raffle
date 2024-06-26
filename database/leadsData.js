@@ -29,6 +29,7 @@ export async function initiateLead() {
     'civil_status TEXT, ' +
     'created_at TEXT,' +
     'is_uploaded TEXT,' +
+    'code_name TEXT,' +
     'random_code TEXT' +
     ')';
 
@@ -111,9 +112,10 @@ export async function insertLeadData(request) {
           'is_uploaded, ' +
           'remarks, ' +
           'random_code, ' +
+          'code_name, ' +
           'created_at' +
           ') ' +
-          'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+          'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
         [
           request.first_name,
           request.middle_name,
@@ -132,6 +134,7 @@ export async function insertLeadData(request) {
           request.is_uploaded,
           request.remarks,
           request.random_code,
+          request.code_name,
           request.created_at.toString(),
         ]
       );
@@ -168,6 +171,7 @@ export async function updateLeadData(id, request) {
           'is_uploaded = ? ' +
           'remarks = ? ' +
           'random_code = ? ' +
+          'code_name = ? ' +
           'WHERE id = ?',
         [
           request.first_name,
@@ -187,6 +191,7 @@ export async function updateLeadData(id, request) {
           request.is_uploaded,
           request.remarks,
           request.random_code,
+          request.code_name,
           id,
         ]
       );

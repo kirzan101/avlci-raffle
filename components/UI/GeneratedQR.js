@@ -1,8 +1,8 @@
 import QRCode from 'react-native-qrcode-svg';
 import { GlobalStyles } from '../../constants/styles';
 
-function GeneratedQR({ employeeNumber, randomAlphaNumeric }) {
-  const textValue = `AVLCI-${employeeNumber}-${randomAlphaNumeric}`;
+function GeneratedQR({ employeeNumber, randomAlphaNumeric, codeName }) {
+  const textValue = `AVLCI-${codeName}-${randomAlphaNumeric}`;
   const logoFromFile = require('../../assets/icon.png');
 
   return (

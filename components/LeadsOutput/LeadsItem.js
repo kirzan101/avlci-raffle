@@ -15,6 +15,7 @@ function LeadsItem({
   is_uploaded,
   source,
   random_code,
+  code_name
 }) {
   const navigation = useNavigation();
   const [modalVisible, setModalVisible] = useState(false);
@@ -44,6 +45,7 @@ function LeadsItem({
         message={qrModalMessage}
         employeeNumber={source}
         randomAlphaNumeric={random_code}
+        codeName={code_name}
       />
       <Pressable
         onPress={leadPressHandler}

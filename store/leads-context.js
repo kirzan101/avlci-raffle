@@ -21,6 +21,7 @@ export const LeadsContext = createContext({
     remarks,
     is_uploaded,
     random_code,
+    code_name,
     created_at,
   }) => {},
   setLeads: (leads) => {},
@@ -45,6 +46,7 @@ export const LeadsContext = createContext({
       remarks,
       is_uploaded,
       random_code,
+      code_name,
       created_at,
     }
   ) => {},
