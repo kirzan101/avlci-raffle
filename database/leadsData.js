@@ -168,9 +168,9 @@ export async function updateLeadData(id, request) {
           'source_prefix = ?, ' +
           'source = ?, ' +
           'civil_status = ?, ' +
-          'is_uploaded = ? ' +
-          'remarks = ? ' +
-          'random_code = ? ' +
+          'is_uploaded = ?, ' +
+          'remarks = ?, ' +
+          'random_code = ?, ' +
           'code_name = ? ' +
           'WHERE id = ?',
         [

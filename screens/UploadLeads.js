@@ -6,13 +6,22 @@ import {
   unUploadedleadsFetch,
   uploadLead,
 } from '../database/leadsData';
-import { StyleSheet, Text, View, Image, Pressable, Alert } from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  Pressable,
+  Alert,
+  TouchableOpacity,
+} from 'react-native';
 import Button from '../components/UI/Button';
 import { storeBulkLead, getLead, fetchLead } from '../util/http';
 import ConfirmationModal from '../components/UI/ConfirmationModal';
 import NetInfo from '@react-native-community/netinfo';
 import { GlobalStyles } from '../constants/styles';
 import { name, version } from '../package.json';
+import SpinningIcon from '../components/UI/SpinningIcon';
 
 function UploadLeads() {
   const uploadLeadsCtx = useContext(UploadLeadsContext);
@@ -46,12 +55,12 @@ function UploadLeads() {
   }
 
   async function confirmModalHandle(callback) {
+    setBtnStatus(true);
     if (callback) {
       const leads = await unUploadedleadsFetch();
       const result = await storeBulkLead(leads);
 
       setModalVisible(false);
-      setBtnStatus(true);
 
       if (result.status == 200) {
         //upload leads
@@ -98,6 +107,7 @@ function UploadLeads() {
           closeModal={closeModalHandle}
           confirmModal={confirmModalHandle}
           message={'Upload all the leads?'}
+          btnStatus={btnStatus}
         />
         <Image
           style={styles.image}
@@ -106,18 +116,24 @@ function UploadLeads() {
         <Text style={styles.infoText}>
           Unuploaded Leads: {unuploadedLeadCount}
         </Text>
-        {unuploadedLeadCount > 0 && (
+        {unuploadedLeadCount > 0 && isConnected && (
           <Button
             style={styles.button}
             onPress={uploadLeadsHandler}
-            disabled={unuploadedLeadCount == 0 ? true : false}
+            // disabled={unuploadedLeadCount == 0 ? true : false}
+            disabled={btnStatus}
           >
-            Click to upload
+            {btnStatus ? <SpinningIcon /> : 'Upload'}
           </Button>
         )}
         {/* <Button style={styles.button} onPress={uploadLeadsHandler}>
           Click to upload
         </Button> */}
+        {(unuploadedLeadCount === 0 || !isConnected) && (
+          <TouchableOpacity style={styles.buttonDisabled} disabled={true}>
+            <Text style={styles.buttonTextDisabled}>Upload</Text>
+          </TouchableOpacity>
+        )}
       </View>
       <View>
         <Text style={styles.versionText}>
@@ -178,5 +194,19 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     color: 'white',
+  },
+  buttonDisabled: {
+    minWidth: 120,
+    marginHorizontal: 8,
+    marginTop: 20,
+    marginBottom: 50,
+    backgroundColor: '#A9A9A9',
+    padding: 10,
+    borderRadius: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  buttonTextDisabled: {
+    color: '#DDD',
   },
 });

@@ -24,6 +24,7 @@ function UploadLeads() {
     const unsubscribe = NetInfo.addEventListener((state) => {
       // console.log(state.isConnected),              ;
       setIsConnected(state.isConnected);
+      // setIsConnected(false);
     });
     unsubscribe();
   }, []);

@@ -44,7 +44,8 @@ function ManageLead({ route, navigation }) {
 
   useEffect(() => {
     const unsubscribe = NetInfo.addEventListener((state) => {
-      setIsConnected(state.isConnected);
+      // setIsConnected(state.isConnected);
+      setIsConnected(false);
     });
 
     const initializeData = async () => {
@@ -66,12 +67,11 @@ function ManageLead({ route, navigation }) {
       {
         text: 'OK',
         onPress: async () => {
+          // console.log(editedLeadId)
           // delete to local
           leadsCtx.deleteLead(editedLeadId);
-
           // delete to database
           await deleteLeadData(editedLeadId);
-
           Alert.alert('Notice:', 'Successfully Deleted!', [
             { text: 'OK', onPress: () => navigation.goBack() },
           ]);
@@ -90,6 +90,10 @@ function ManageLead({ route, navigation }) {
     setEmployeeNumber(leadsData.source); //source here is the employee/agent number
     setRandomCode(leadsData.random_code);
 
+    const codeNameResult = await getAgent(leadsData.source);
+    setCodeName(codeNameResult);
+    leadsData.code_name = codeNameResult;
+
     if (isEditing) {
       // update to local
       leadsCtx.updateLead(editedLeadId, leadsData);
@@ -102,10 +106,6 @@ function ManageLead({ route, navigation }) {
         { text: 'OK', onPress: () => navigation.goBack() },
       ]);
     } else {
-      const codeNameResult = await getAgent(leadsData.source);
-      setCodeName(codeNameResult);
-      leadsData.code_name = codeNameResult;
-
       // submit online
       if (isConnected) {
         try {
@@ -167,7 +167,7 @@ function ManageLead({ route, navigation }) {
           defaultSource={defaultSource}
         />
       </ScrollView>
-      {isEditing && selectedLead.is_uploaded == 'false' && (
+      {isEditing && (selectedLead && selectedLead.is_uploaded) == 'false' && (
         <View style={styles.deleteContainer}>
           <IconButton
             icon="trash"

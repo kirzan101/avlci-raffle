@@ -41,7 +41,11 @@ function ConfirmationModal({
               disabled={btnStatus}
               onPress={() => closed()}
             >
-              <Text style={styles.textStyle}>Cancel</Text>
+              {btnStatus ? (
+                <SpinningIcon />
+              ) : (
+                <Text style={styles.textStyle}>Cancel</Text>
+              )}
             </Pressable>
             <Pressable
               style={[styles.button, styles.buttonConfirm]}

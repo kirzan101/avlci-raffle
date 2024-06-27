@@ -11,7 +11,7 @@ const loginLink = 'https://leads.avlci.com/api/mobile/login';
 const email = 'opc-lead@astoria.com.ph';
 const password = '0aj1bvlBv7PXEyU73Cs=';
 
-// //local links:
+//local links:
 // const bulkLink = 'http://192.168.88.23:8000/api/opc-lead-bulk';
 // const opcLink = 'http://192.168.88.23:8000/api/opc-leads';
 // const opcAgentLink = 'http://192.168.88.23:8000/api/opc-agents';
@@ -60,7 +60,7 @@ async function authenticate() {
 export async function storeBulkLead(leadDatas) {
   // const auth = await authenticate();
   // const token = auth.data.token;
-
+  // await authenticate();
   let token = await AsyncStorage.getItem('token');
   if (!token) {
     await authenticate();
@@ -70,15 +70,28 @@ export async function storeBulkLead(leadDatas) {
   const headers = {
     Authorization: `Bearer ${token}`,
     Accept: 'application/json',
+    'Content-Type': 'application/json',
   };
+
+  // const headers = {
+  //   Authorization: `Bearer ${token}`,
+  //   Accept: 'application/json',
+  // };
+
+  console.log('bulk insert here', headers);
+  // console.log('bulk leadDatas', JSON.stringify(leadDatas))
 
   const response = await axios.post(
     bulkLink,
     {
       leads: JSON.stringify(leadDatas),
     },
-    headers
+    {
+      headers: headers,
+    }
   );
+
+  // console.log('response here', response);
 
   return response;
 }
@@ -180,7 +193,6 @@ export async function localAgentsInitiate() {
     // return current agents here
     return localAgentDatas;
   } else {
-    console.log('defaultAgents', defaultAgents)
     // create default agents
     await bulkInsertAgents(defaultAgents);
   }
@@ -233,7 +245,6 @@ const bulkInsertAgents = async (agents) => {
         (tx) => {
           agents.forEach(async (agent) => {
             try {
-              console.log(agent, 'agent here');
               await executeSqlAsync(
                 tx,
                 'INSERT INTO agents (first_name, middle_name, last_name, employee_number, code_name, status) VALUES (?,?,?,?,?,?)',
@@ -347,228 +358,228 @@ export async function updateLocalAgents() {
 }
 
 const defaultAgents = [
-  {
-    status: 'new',
-    code_name: '',
-    employee_number: '12049',
-    last_name: 'Asuncion',
-    first_name: 'Allan',
-    middle_name: 'Dulnuan',
-  },
-  {
-    status: 'new',
-    code_name: '',
-    employee_number: '12053',
-    last_name: 'Bohol',
-    first_name: 'Marianet',
-    middle_name: 'Apolinario',
-  },
-  {
-    status: 'new',
-    code_name: '',
-    employee_number: '12079',
-    last_name: 'Ariel',
-    first_name: 'Odeth',
-    middle_name: 'Hernaez',
-  },
-  {
-    status: 'new',
-    code_name: '',
-    employee_number: '12092',
-    last_name: 'Cabato',
-    first_name: 'Romabel',
-    middle_name: 'Gozun',
-  },
-  {
-    status: 'new',
-    code_name: '',
-    employee_number: '12137',
-    last_name: 'Tiongco',
-    first_name: 'Gilbert',
-    middle_name: 'Masula',
-  },
-  {
-    status: 'new',
-    code_name: '',
-    employee_number: '12149',
-    last_name: 'Bartolome',
-    first_name: 'Elmer',
-    middle_name: 'Espiritu',
-  },
-  {
-    status: 'new',
-    code_name: '',
-    employee_number: '12166',
-    last_name: 'Jamero',
-    first_name: 'Menandro',
-    middle_name: 'Baserto',
-  },
-  {
-    status: 'new',
-    code_name: '',
-    employee_number: '12202',
-    last_name: 'Gallentes',
-    first_name: 'Elsen Hower',
-    middle_name: 'Celis',
-  },
-  {
-    status: 'new',
-    code_name: '',
-    employee_number: '12235',
-    last_name: 'Duatin',
-    first_name: 'Maria Katrina',
-    middle_name: 'De Guzman',
-  },
-  {
-    status: 'new',
-    code_name: '',
-    employee_number: '12249',
-    last_name: 'Viernes',
-    first_name: 'Keivin',
-    middle_name: 'Siobal',
-  },
-  {
-    status: 'new',
-    code_name: '',
-    employee_number: '12259',
-    last_name: 'Magat',
-    first_name: 'Reynaldo',
-    middle_name: 'Sebastian',
-  },
-  {
-    status: 'new',
-    code_name: '',
-    employee_number: '12262',
-    last_name: 'Pamat',
-    first_name: 'Marlyn',
-    middle_name: 'Oroceo',
-  },
-  {
-    status: 'new',
-    code_name: '',
-    employee_number: '12280',
-    last_name: 'Mendoza',
-    first_name: 'Donnalyn',
-    middle_name: 'Mayo',
-  },
-  {
-    status: 'new',
-    code_name: '',
-    employee_number: '12298',
-    last_name: 'Caparas',
-    first_name: 'Mary Ann',
-    middle_name: 'Galarse',
-  },
-  {
-    status: 'new',
-    code_name: '',
-    employee_number: '12301',
-    last_name: 'Caño',
-    first_name: 'Rachel',
-    middle_name: 'Pamat',
-  },
-  {
-    status: 'new',
-    code_name: '',
-    employee_number: '12303',
-    last_name: 'Amancio',
-    first_name: 'Jonalyn',
-    middle_name: 'Romano',
-  },
-  {
-    status: 'new',
-    code_name: '',
-    employee_number: '12345',
-    last_name: 'Pindos',
-    first_name: 'Reynaldo',
-    middle_name: 'Aparri',
-  },
-  {
-    status: 'new',
-    code_name: '',
-    employee_number: '12466',
-    last_name: 'Celis',
-    first_name: 'Neriza',
-    middle_name: 'Llagono',
-  },
-  {
-    status: 'new',
-    code_name: '',
-    employee_number: '12479',
-    last_name: 'Zonio',
-    first_name: 'Rowel',
-    middle_name: 'Cortez',
-  },
-  {
-    status: 'new',
-    code_name: '',
-    employee_number: '12496',
-    last_name: 'Ilagan',
-    first_name: 'Anthony',
-    middle_name: 'Palabrica',
-  },
-  {
-    status: 'new',
-    code_name: '',
-    employee_number: '12500',
-    last_name: 'Ocson',
-    first_name: 'Rachel-Lyn',
-    middle_name: 'Añonuevo',
-  },
-  {
-    status: 'new',
-    code_name: '',
-    employee_number: '12562',
-    last_name: 'Geli',
-    first_name: 'Ryan Jay',
-    middle_name: 'Valdez',
-  },
-  {
-    status: 'new',
-    code_name: '',
-    employee_number: '12686',
-    last_name: 'Labadlabad',
-    first_name: 'Anjenette',
-    middle_name: 'Cabique',
-  },
-  {
-    status: 'new',
-    code_name: '',
-    employee_number: '12818',
-    last_name: 'Pangilinan',
-    first_name: 'Jerome',
-    middle_name: 'Talenjale',
-  },
-  {
-    status: 'new',
-    code_name: '',
-    employee_number: '12852',
-    last_name: 'Macaspac',
-    first_name: 'King',
-    middle_name: 'Cruz',
-  },
-  {
-    status: 'new',
-    code_name: '',
-    employee_number: '12853',
-    last_name: 'Nabayra',
-    first_name: 'Kevin Jay',
-    middle_name: 'Peña',
-  },
-  {
-    status: 'new',
-    code_name: '',
-    employee_number: '12908',
-    last_name: 'Zonio',
-    first_name: 'Ellienite',
-    middle_name: 'Cortes',
-  },
-  {
-    status: 'new',
-    code_name: '',
-    employee_number: '12910',
-    last_name: 'Horlador',
-    first_name: 'Jary',
-    middle_name: 'Hablero',
-  },
+  // {
+  //   status: 'new',
+  //   code_name: '',
+  //   employee_number: '12049',
+  //   last_name: 'Asuncion',
+  //   first_name: 'Allan',
+  //   middle_name: 'Dulnuan',
+  // },
+  // {
+  //   status: 'new',
+  //   code_name: '',
+  //   employee_number: '12053',
+  //   last_name: 'Bohol',
+  //   first_name: 'Marianet',
+  //   middle_name: 'Apolinario',
+  // },
+  // {
+  //   status: 'new',
+  //   code_name: '',
+  //   employee_number: '12079',
+  //   last_name: 'Ariel',
+  //   first_name: 'Odeth',
+  //   middle_name: 'Hernaez',
+  // },
+  // {
+  //   status: 'new',
+  //   code_name: '',
+  //   employee_number: '12092',
+  //   last_name: 'Cabato',
+  //   first_name: 'Romabel',
+  //   middle_name: 'Gozun',
+  // },
+  // {
+  //   status: 'new',
+  //   code_name: '',
+  //   employee_number: '12137',
+  //   last_name: 'Tiongco',
+  //   first_name: 'Gilbert',
+  //   middle_name: 'Masula',
+  // },
+  // {
+  //   status: 'new',
+  //   code_name: '',
+  //   employee_number: '12149',
+  //   last_name: 'Bartolome',
+  //   first_name: 'Elmer',
+  //   middle_name: 'Espiritu',
+  // },
+  // {
+  //   status: 'new',
+  //   code_name: '',
+  //   employee_number: '12166',
+  //   last_name: 'Jamero',
+  //   first_name: 'Menandro',
+  //   middle_name: 'Baserto',
+  // },
+  // {
+  //   status: 'new',
+  //   code_name: '',
+  //   employee_number: '12202',
+  //   last_name: 'Gallentes',
+  //   first_name: 'Elsen Hower',
+  //   middle_name: 'Celis',
+  // },
+  // {
+  //   status: 'new',
+  //   code_name: '',
+  //   employee_number: '12235',
+  //   last_name: 'Duatin',
+  //   first_name: 'Maria Katrina',
+  //   middle_name: 'De Guzman',
+  // },
+  // {
+  //   status: 'new',
+  //   code_name: '',
+  //   employee_number: '12249',
+  //   last_name: 'Viernes',
+  //   first_name: 'Keivin',
+  //   middle_name: 'Siobal',
+  // },
+  // {
+  //   status: 'new',
+  //   code_name: '',
+  //   employee_number: '12259',
+  //   last_name: 'Magat',
+  //   first_name: 'Reynaldo',
+  //   middle_name: 'Sebastian',
+  // },
+  // {
+  //   status: 'new',
+  //   code_name: '',
+  //   employee_number: '12262',
+  //   last_name: 'Pamat',
+  //   first_name: 'Marlyn',
+  //   middle_name: 'Oroceo',
+  // },
+  // {
+  //   status: 'new',
+  //   code_name: '',
+  //   employee_number: '12280',
+  //   last_name: 'Mendoza',
+  //   first_name: 'Donnalyn',
+  //   middle_name: 'Mayo',
+  // },
+  // {
+  //   status: 'new',
+  //   code_name: '',
+  //   employee_number: '12298',
+  //   last_name: 'Caparas',
+  //   first_name: 'Mary Ann',
+  //   middle_name: 'Galarse',
+  // },
+  // {
+  //   status: 'new',
+  //   code_name: '',
+  //   employee_number: '12301',
+  //   last_name: 'Caño',
+  //   first_name: 'Rachel',
+  //   middle_name: 'Pamat',
+  // },
+  // {
+  //   status: 'new',
+  //   code_name: '',
+  //   employee_number: '12303',
+  //   last_name: 'Amancio',
+  //   first_name: 'Jonalyn',
+  //   middle_name: 'Romano',
+  // },
+  // {
+  //   status: 'new',
+  //   code_name: '',
+  //   employee_number: '12345',
+  //   last_name: 'Pindos',
+  //   first_name: 'Reynaldo',
+  //   middle_name: 'Aparri',
+  // },
+  // {
+  //   status: 'new',
+  //   code_name: '',
+  //   employee_number: '12466',
+  //   last_name: 'Celis',
+  //   first_name: 'Neriza',
+  //   middle_name: 'Llagono',
+  // },
+  // {
+  //   status: 'new',
+  //   code_name: '',
+  //   employee_number: '12479',
+  //   last_name: 'Zonio',
+  //   first_name: 'Rowel',
+  //   middle_name: 'Cortez',
+  // },
+  // {
+  //   status: 'new',
+  //   code_name: '',
+  //   employee_number: '12496',
+  //   last_name: 'Ilagan',
+  //   first_name: 'Anthony',
+  //   middle_name: 'Palabrica',
+  // },
+  // {
+  //   status: 'new',
+  //   code_name: '',
+  //   employee_number: '12500',
+  //   last_name: 'Ocson',
+  //   first_name: 'Rachel-Lyn',
+  //   middle_name: 'Añonuevo',
+  // },
+  // {
+  //   status: 'new',
+  //   code_name: '',
+  //   employee_number: '12562',
+  //   last_name: 'Geli',
+  //   first_name: 'Ryan Jay',
+  //   middle_name: 'Valdez',
+  // },
+  // {
+  //   status: 'new',
+  //   code_name: '',
+  //   employee_number: '12686',
+  //   last_name: 'Labadlabad',
+  //   first_name: 'Anjenette',
+  //   middle_name: 'Cabique',
+  // },
+  // {
+  //   status: 'new',
+  //   code_name: '',
+  //   employee_number: '12818',
+  //   last_name: 'Pangilinan',
+  //   first_name: 'Jerome',
+  //   middle_name: 'Talenjale',
+  // },
+  // {
+  //   status: 'new',
+  //   code_name: '',
+  //   employee_number: '12852',
+  //   last_name: 'Macaspac',
+  //   first_name: 'King',
+  //   middle_name: 'Cruz',
+  // },
+  // {
+  //   status: 'new',
+  //   code_name: '',
+  //   employee_number: '12853',
+  //   last_name: 'Nabayra',
+  //   first_name: 'Kevin Jay',
+  //   middle_name: 'Peña',
+  // },
+  // {
+  //   status: 'new',
+  //   code_name: '',
+  //   employee_number: '12908',
+  //   last_name: 'Zonio',
+  //   first_name: 'Ellienite',
+  //   middle_name: 'Cortes',
+  // },
+  // {
+  //   status: 'new',
+  //   code_name: '',
+  //   employee_number: '12910',
+  //   last_name: 'Horlador',
+  //   first_name: 'Jary',
+  //   middle_name: 'Hablero',
+  // },
 ];
