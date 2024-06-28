@@ -16,7 +16,7 @@ import {
   storeDefaults,
   updateDafaults,
 } from '../database/sourceData';
-import { getAgent, storeLead } from '../util/http';
+import { getAgent, storeLead, updateLeadByRandomCode } from '../util/http';
 import NetInfo from '@react-native-community/netinfo';
 import QRResultModal from '../components/UI/QRResultModal';
 
@@ -44,8 +44,7 @@ function ManageLead({ route, navigation }) {
 
   useEffect(() => {
     const unsubscribe = NetInfo.addEventListener((state) => {
-      // setIsConnected(state.isConnected);
-      setIsConnected(false);
+      setIsConnected(state.isConnected);
     });
 
     const initializeData = async () => {
@@ -90,11 +89,29 @@ function ManageLead({ route, navigation }) {
     setEmployeeNumber(leadsData.source); //source here is the employee/agent number
     setRandomCode(leadsData.random_code);
 
+    // set code name
     const codeNameResult = await getAgent(leadsData.source);
     setCodeName(codeNameResult);
     leadsData.code_name = codeNameResult;
 
     if (isEditing) {
+      if (isConnected) {
+        try {
+          if (leadsData.is_uploaded == 'true') {
+            // update online lead
+            const response = await updateLeadByRandomCode(
+              leadsData,
+              leadsData.random_code
+            );
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      }
+
+      if (leadsData.is_uploaded == 'true') {
+        leadsData.is_uploaded = 'true';
+      }
       // update to local
       leadsCtx.updateLead(editedLeadId, leadsData);
 

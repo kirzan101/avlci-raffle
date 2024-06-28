@@ -236,8 +236,11 @@ function LeadForm({
       source: inputs.source.value.trim(),
       civil_status: inputs.civil_status.value.trim(),
       remarks: inputs.remarks.value.trim(),
-      is_uploaded: 'false',
-      random_code: randomCode,
+      is_uploaded:
+        inputs.is_uploaded && typeof inputs.is_uploaded.value === 'string'
+          ? inputs.is_uploaded.value.trim()
+          : 'false',
+      random_code: defaultValues ? defaultValues.random_code : randomCode,
       code_name: '',
       created_at: today,
     };
@@ -469,7 +472,7 @@ function LeadForm({
         }}
       />
       <View style={styles.buttons}>
-        {isEditing && inputs.is_uploaded.value == 'false' && (
+        {/* {isEditing && inputs.is_uploaded.value == 'false' && (
           <Button style={styles.button} onPress={submitHandler}>
             {submitButtonLabel}
           </Button>
@@ -478,7 +481,10 @@ function LeadForm({
           <Button style={styles.button} onPress={submitHandler}>
             {submitButtonLabel}
           </Button>
-        )}
+        )} */}
+        <Button style={styles.button} onPress={submitHandler}>
+          {submitButtonLabel}
+        </Button>
         <Button style={styles.button} mode="flat" onPress={onCancel}>
           Cancel
         </Button>
