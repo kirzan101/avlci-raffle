@@ -4,20 +4,20 @@ const db = openDatabase('leads');
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 //Live links:
-// const bulkLink = 'https://leads.avlci.com/api/opc-lead-bulk';
-// const opcLink = 'https://leads.avlci.com/api/opc-leads';
-// const opcAgentLink = 'https://leads.avlci.com/api/opc-agents';
-// const loginLink = 'https://leads.avlci.com/api/mobile/login';
-// const email = 'opc-lead@astoria.com.ph';
-// const password = '0aj1bvlBv7PXEyU73Cs=';
+const bulkLink = 'https://leads.avlci.com/api/opc-lead-bulk';
+const opcLink = 'https://leads.avlci.com/api/opc-leads';
+const opcAgentLink = 'https://leads.avlci.com/api/opc-agents';
+const loginLink = 'https://leads.avlci.com/api/mobile/login';
+const email = 'opc-lead@astoria.com.ph';
+const password = '0aj1bvlBv7PXEyU73Cs=';
 
 //local links:
-const bulkLink = 'http://192.168.88.23:8000/api/opc-lead-bulk';
-const opcLink = 'http://192.168.88.23:8000/api/opc-leads';
-const opcAgentLink = 'http://192.168.88.23:8000/api/opc-agents';
-const loginLink = 'http://192.168.88.23:8000/api/mobile/login';
-const email = 'opc_lead@mail.com';
-const password = 'wJvycvwYrJg=';
+// const bulkLink = 'http://192.168.88.23:8000/api/opc-lead-bulk';
+// const opcLink = 'http://192.168.88.23:8000/api/opc-leads';
+// const opcAgentLink = 'http://192.168.88.23:8000/api/opc-agents';
+// const loginLink = 'http://192.168.88.23:8000/api/mobile/login';
+// const email = 'opc_lead@mail.com';
+// const password = 'wJvycvwYrJg=';
 
 async function initiateAuth() {
   const sql =

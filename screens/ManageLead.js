@@ -109,8 +109,12 @@ function ManageLead({ route, navigation }) {
         }
       }
 
-      if (leadsData.is_uploaded == 'true') {
-        leadsData.is_uploaded = 'true';
+      if (!isConnected && leadsData.is_uploaded == 'true') {
+        Alert.alert('Notice:', 'Unable to edit an uploaded record in offline mode.', [
+          { text: 'OK', onPress: () => navigation.goBack() },
+        ]);
+
+        return;
       }
       // update to local
       leadsCtx.updateLead(editedLeadId, leadsData);
