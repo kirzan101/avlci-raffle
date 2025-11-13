@@ -1,15 +1,15 @@
-import axios from 'axios';
-import { openDatabase } from 'expo-sqlite';
-const db = openDatabase('leads');
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from "axios";
+import { openDatabase } from "expo-sqlite";
+const db = openDatabase("leads");
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 //Live links:
-const bulkLink = 'https://leads.avlci.com/api/opc-lead-bulk';
-const opcLink = 'https://leads.avlci.com/api/opc-leads';
-const opcAgentLink = 'https://leads.avlci.com/api/opc-agents';
-const loginLink = 'https://leads.avlci.com/api/mobile/login';
-const email = 'opc-lead@astoria.com.ph';
-const password = '0aj1bvlBv7PXEyU73Cs=';
+const bulkLink = "https://leads.avlci.com/api/opc-lead-bulk";
+const opcLink = "https://leads.avlci.com/api/opc-leads";
+const opcAgentLink = "https://leads.avlci.com/api/opc-agents";
+const loginLink = "https://leads.avlci.com/api/mobile/login";
+const email = "opc-lead@astoria.com.ph";
+const password = "0JfEQe8M7My1ZTZLzQ==";
 
 //local links:
 // const bulkLink = 'http://192.168.88.23:8000/api/opc-lead-bulk';
@@ -21,10 +21,10 @@ const password = '0aj1bvlBv7PXEyU73Cs=';
 
 async function initiateAuth() {
   const sql =
-    'CREATE TABLE IF NOT EXISTS auth (' +
-    'id INTEGER PRIMARY KEY AUTOINCREMENT, ' +
-    'token TEXT ' +
-    ')';
+    "CREATE TABLE IF NOT EXISTS auth (" +
+    "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+    "token TEXT " +
+    ")";
 
   await db.transactionAsync(async (tx) => {
     await tx.executeSqlAsync(sql, [], (tx, results) => {
@@ -49,7 +49,7 @@ async function authenticate() {
     const token = response.data.token;
 
     // Set token to session storage
-    await AsyncStorage.setItem('token', token);
+    await AsyncStorage.setItem("token", token);
   } else {
     return null;
   }
@@ -61,16 +61,16 @@ export async function storeBulkLead(leadDatas) {
   // const auth = await authenticate();
   // const token = auth.data.token;
   // await authenticate();
-  let token = await AsyncStorage.getItem('token');
+  let token = await AsyncStorage.getItem("token");
   if (!token) {
     await authenticate();
-    token = await AsyncStorage.getItem('token');
+    token = await AsyncStorage.getItem("token");
   }
 
   const headers = {
     Authorization: `Bearer ${token}`,
-    Accept: 'application/json',
-    'Content-Type': 'application/json',
+    Accept: "application/json",
+    "Content-Type": "application/json",
   };
 
   const response = await axios.post(
@@ -93,19 +93,19 @@ export async function storeLead(leadData) {
   // console.log('auth token', auth, leadData);
   // const token = auth.data.token;
 
-  let token = await AsyncStorage.getItem('token');
+  let token = await AsyncStorage.getItem("token");
   if (!token) {
     await authenticate();
-    token = await AsyncStorage.getItem('token');
+    token = await AsyncStorage.getItem("token");
   }
 
   const headers = {
     Authorization: `Bearer ${token}`,
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   };
 
   //remove sa is_uploaded column
-  delete leadData['is_uploaded'];
+  delete leadData["is_uploaded"];
 
   const response = await axios.post(opcLink, leadData, { headers });
   return response;
@@ -115,15 +115,15 @@ export async function updateLead(leadData, id) {
   // const auth = await authenticate();
   // const token = auth.data.token;
 
-  let token = await AsyncStorage.getItem('token');
+  let token = await AsyncStorage.getItem("token");
   if (!token) {
     await authenticate();
-    token = await AsyncStorage.getItem('token');
+    token = await AsyncStorage.getItem("token");
   }
 
   const headers = {
     Authorization: `Bearer ${token}`,
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   };
   const response = await axios.put(opcLink + `/${id}`, leadData, {
     headers: headers,
@@ -137,15 +137,15 @@ export async function updateLeadByRandomCode(leadData, randomCode) {
   // const auth = await authenticate();
   // const token = auth.data.token;
 
-  let token = await AsyncStorage.getItem('token');
+  let token = await AsyncStorage.getItem("token");
   if (!token) {
     await authenticate();
-    token = await AsyncStorage.getItem('token');
+    token = await AsyncStorage.getItem("token");
   }
 
   const headers = {
     Authorization: `Bearer ${token}`,
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   };
   const response = await axios.put(opcLink + `/code/${randomCode}`, leadData, {
     headers: headers,
@@ -158,15 +158,15 @@ export async function updateLeadByRandomCode(leadData, randomCode) {
 export async function deleteLead(id) {
   // const auth = await authenticate();
   // const token = auth.data.token;
-  let token = await AsyncStorage.getItem('token');
+  let token = await AsyncStorage.getItem("token");
   if (!token) {
     await authenticate();
-    token = await AsyncStorage.getItem('token');
+    token = await AsyncStorage.getItem("token");
   }
 
   const headers = {
     Authorization: `Bearer ${token}`,
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   };
 
   const response = await axios.delete(opcLink + `/${id}`, leadData, {
@@ -182,15 +182,15 @@ export async function localAgentsInitiate() {
   // });
 
   const sql =
-    'CREATE TABLE IF NOT EXISTS agents (' +
-    'id INTEGER PRIMARY KEY AUTOINCREMENT, ' +
-    'first_name TEXT, ' +
-    'middle_name TEXT, ' +
-    'last_name TEXT, ' +
-    'employee_number TEXT, ' +
-    'code_name TEXT, ' +
-    'status TEXT ' +
-    ')';
+    "CREATE TABLE IF NOT EXISTS agents (" +
+    "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+    "first_name TEXT, " +
+    "middle_name TEXT, " +
+    "last_name TEXT, " +
+    "employee_number TEXT, " +
+    "code_name TEXT, " +
+    "status TEXT " +
+    ")";
 
   await db.transactionAsync(async (tx) => {
     await tx.executeSqlAsync(sql, [], (tx, results) => {});
@@ -199,7 +199,7 @@ export async function localAgentsInitiate() {
   const localAgentDatas = [];
 
   await db.transactionAsync(async (tx) => {
-    const results = await tx.executeSqlAsync('SELECT * FROM agents', []);
+    const results = await tx.executeSqlAsync("SELECT * FROM agents", []);
     for (let index = 0; index < results.rows.length; index++) {
       localAgentDatas.push(results.rows[index]);
     }
@@ -263,14 +263,14 @@ const bulkInsertAgents = async (agents) => {
             try {
               await executeSqlAsync(
                 tx,
-                'INSERT INTO agents (first_name, middle_name, last_name, employee_number, code_name, status) VALUES (?,?,?,?,?,?)',
+                "INSERT INTO agents (first_name, middle_name, last_name, employee_number, code_name, status) VALUES (?,?,?,?,?,?)",
                 [
                   agent.first_name,
                   agent.middle_name,
                   agent.last_name,
                   agent.employee_number,
                   agent.code_name,
-                  'new',
+                  "new",
                 ]
               );
             } catch (error) {
@@ -295,7 +295,7 @@ const deleteAgentsWithStatusNew = async () => {
       return results;
     });
   } catch (error) {
-    console.error('Error deleting agents:', error);
+    console.error("Error deleting agents:", error);
   }
 };
 
@@ -323,7 +323,7 @@ export async function getAgent(employee_number) {
     if (agent) {
       return agent.code_name;
     }
-    return '';
+    return "";
   }
 
   return null;
@@ -332,15 +332,15 @@ export async function getAgent(employee_number) {
 export async function updateLocalAgents() {
   // await localAgentsInitiate();
 
-  let token = await AsyncStorage.getItem('token');
+  let token = await AsyncStorage.getItem("token");
   if (!token) {
     await authenticate();
-    token = await AsyncStorage.getItem('token');
+    token = await AsyncStorage.getItem("token");
   }
 
   const headers = {
     Authorization: `Bearer ${token}`,
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   };
 
   const response = await axios.get(opcAgentLink, { headers });
@@ -357,7 +357,7 @@ export async function updateLocalAgents() {
         middle_name: agent.middle_name,
         last_name: agent.last_name,
         employee_number: agent.employee_number,
-        status: 'new',
+        status: "new",
         code_name: agent.code_name,
       };
     });
