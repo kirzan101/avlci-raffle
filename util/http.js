@@ -60,10 +60,19 @@ async function authenticate() {
 export async function storeBulkLead(leadDatas) {
   // const auth = await authenticate();
   // const token = auth.data.token;
-  // await authenticate();
+  await authenticate();
   let token = await AsyncStorage.getItem("token");
   if (!token) {
-    await authenticate();
+    const authRespone = await authenticate();
+    console.log("auth response", authRespone);
+
+    if (!authRespone || authRespone.status !== 200) {
+      return {
+        status: 500,
+        message: "Authentication failed",
+      };
+    }
+
     token = await AsyncStorage.getItem("token");
   }
 
@@ -80,10 +89,10 @@ export async function storeBulkLead(leadDatas) {
     },
     {
       headers: headers,
-    }
+    },
   );
 
-  // console.log('response here', response);
+  console.log("response here", response);
 
   return response;
 }
@@ -222,7 +231,7 @@ const executeSqlAsync = (tx, sql, params = []) => {
       sql,
       params,
       (_, results) => resolve(results),
-      (_, error) => reject(error)
+      (_, error) => reject(error),
     );
   });
 };
@@ -271,7 +280,7 @@ const bulkInsertAgents = async (agents) => {
                   agent.employee_number,
                   agent.code_name,
                   "new",
-                ]
+                ],
               );
             } catch (error) {
               reject(error);
@@ -279,7 +288,7 @@ const bulkInsertAgents = async (agents) => {
           });
         },
         reject,
-        resolve
+        resolve,
       );
     });
   });
@@ -290,7 +299,7 @@ const deleteAgentsWithStatusNew = async () => {
     await db.transactionAsync(async (tx) => {
       const results = await tx.executeSqlAsync(
         'DELETE FROM agents WHERE status = "new"',
-        []
+        [],
       );
       return results;
     });
@@ -317,7 +326,7 @@ export async function getAgent(employee_number) {
   if (localAgentDatas.length > 0) {
     // return localAgentDatas;
     const agent = localAgentDatas.find(
-      (agent) => agent.employee_number === employee_number
+      (agent) => agent.employee_number === employee_number,
     );
 
     if (agent) {

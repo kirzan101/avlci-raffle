@@ -1,24 +1,24 @@
-import { useContext, useEffect, useLayoutEffect, useState } from 'react';
-import { Alert, ScrollView, StyleSheet, View } from 'react-native';
+import { useContext, useEffect, useLayoutEffect, useState } from "react";
+import { Alert, ScrollView, StyleSheet, View } from "react-native";
 
-import { GlobalStyles } from '../constants/styles';
-import IconButton from '../components/UI/IconButton';
-import Button from '../components/UI/Button';
-import { LeadsContext } from '../store/leads-context';
-import LeadForm from '../components/ManageLead/LeadForm';
+import { GlobalStyles } from "../constants/styles";
+import IconButton from "../components/UI/IconButton";
+import Button from "../components/UI/Button";
+import { LeadsContext } from "../store/leads-context";
+import LeadForm from "../components/ManageLead/LeadForm";
 import {
   insertLeadData,
   updateLeadData,
   deleteLeadData,
-} from '../database/leadsData';
+} from "../database/leadsData";
 import {
   getSourceDefaults,
   storeDefaults,
   updateDafaults,
-} from '../database/sourceData';
-import { getAgent, storeLead, updateLeadByRandomCode } from '../util/http';
-import NetInfo from '@react-native-community/netinfo';
-import QRResultModal from '../components/UI/QRResultModal';
+} from "../database/sourceData";
+import { getAgent, storeLead, updateLeadByRandomCode } from "../util/http";
+import NetInfo from "@react-native-community/netinfo";
+import QRResultModal from "../components/UI/QRResultModal";
 
 function ManageLead({ route, navigation }) {
   const leadsCtx = useContext(LeadsContext);
@@ -26,10 +26,10 @@ function ManageLead({ route, navigation }) {
   const [defaultSource, setDefaultSource] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [btnStatus, setBtnStatus] = useState(false);
-  const [employeeNumber, setEmployeeNumber] = useState('');
-  const [randomCode, setRandomCode] = useState('');
-  const [codeName, setCodeName] = useState('');
-  const [modalMessage, setModalMessage] = useState('');
+  const [employeeNumber, setEmployeeNumber] = useState("");
+  const [randomCode, setRandomCode] = useState("");
+  const [codeName, setCodeName] = useState("");
+  const [modalMessage, setModalMessage] = useState("");
 
   const editedLeadId = route.params?.leadId;
   const isEditing = !!editedLeadId; // '!!' converts to boolean
@@ -38,7 +38,7 @@ function ManageLead({ route, navigation }) {
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      title: isEditing ? 'Edit' : 'Add',
+      title: isEditing ? "Edit" : "Add",
     });
   }, [navigation, isEditing]);
 
@@ -57,22 +57,22 @@ function ManageLead({ route, navigation }) {
   }, []);
 
   async function deleteLeadHandler() {
-    Alert.alert('Warning:', 'Delete this record?', [
+    Alert.alert("Warning:", "Delete this record?", [
       {
-        text: 'Cancel',
-        onPress: () => console.log('Cancel Pressed'),
-        style: 'cancel',
+        text: "Cancel",
+        onPress: () => console.log("Cancel Pressed"),
+        style: "cancel",
       },
       {
-        text: 'OK',
+        text: "OK",
         onPress: async () => {
           // console.log(editedLeadId)
           // delete to local
           leadsCtx.deleteLead(editedLeadId);
           // delete to database
           await deleteLeadData(editedLeadId);
-          Alert.alert('Notice:', 'Successfully Deleted!', [
-            { text: 'OK', onPress: () => navigation.goBack() },
+          Alert.alert("Notice:", "Successfully Deleted!", [
+            { text: "OK", onPress: () => navigation.goBack() },
           ]);
         },
       },
@@ -97,11 +97,11 @@ function ManageLead({ route, navigation }) {
     if (isEditing) {
       if (isConnected) {
         try {
-          if (leadsData.is_uploaded == 'true') {
+          if (leadsData.is_uploaded == "true") {
             // update online lead
             const response = await updateLeadByRandomCode(
               leadsData,
-              leadsData.random_code
+              leadsData.random_code,
             );
           }
         } catch (error) {
@@ -109,10 +109,12 @@ function ManageLead({ route, navigation }) {
         }
       }
 
-      if (!isConnected && leadsData.is_uploaded == 'true') {
-        Alert.alert('Notice:', 'Unable to edit an uploaded record in offline mode.', [
-          { text: 'OK', onPress: () => navigation.goBack() },
-        ]);
+      if (!isConnected && leadsData.is_uploaded == "true") {
+        Alert.alert(
+          "Notice:",
+          "Unable to edit an uploaded record in offline mode.",
+          [{ text: "OK", onPress: () => navigation.goBack() }],
+        );
 
         return;
       }
@@ -121,22 +123,24 @@ function ManageLead({ route, navigation }) {
 
       // update to database
       const result = await updateLeadData(editedLeadId, leadsData);
-      const message = result ? 'Successfully Updated!' : 'Invalid form.';
+      const message = result ? "Successfully Updated!" : "Invalid form.";
 
-      Alert.alert('Notice:', message, [
-        { text: 'OK', onPress: () => navigation.goBack() },
+      Alert.alert("Notice:", message, [
+        { text: "OK", onPress: () => navigation.goBack() },
       ]);
     } else {
+      // default value for new lead
+      leadsData.is_uploaded = "false";
+
       // submit online
       if (isConnected) {
         try {
           const response = await storeLead(onlineLeadData);
-
           if (response.status == 200) {
-            leadsData.is_uploaded = 'true';
+            leadsData.is_uploaded = "true";
           }
         } catch (error) {
-          console.log('error on online submit', error.response.data);
+          console.log("error on online submit", error.response?.data);
         }
       }
 
@@ -144,7 +148,7 @@ function ManageLead({ route, navigation }) {
       const insertedId = await insertLeadData(leadsData);
 
       if (insertedId > 0) {
-        leadsData['id'] = insertedId;
+        leadsData["id"] = insertedId;
       }
 
       // add to local
@@ -152,11 +156,11 @@ function ManageLead({ route, navigation }) {
 
       if (insertedId > 0) {
         storeDefaults(leadsData);
-        setModalMessage('Successfully Added!');
+        setModalMessage("Successfully Added!");
         setModalVisible(true);
       } else {
-        Alert.alert('Notice:', 'Invalid form.', [
-          { text: 'OK', onPress: () => navigation.goBack() },
+        Alert.alert("Notice:", "Invalid form.", [
+          { text: "OK", onPress: () => navigation.goBack() },
         ]);
       }
     }
@@ -180,7 +184,7 @@ function ManageLead({ route, navigation }) {
       />
       <ScrollView>
         <LeadForm
-          submitButtonLabel={isEditing ? 'Update' : 'Add'}
+          submitButtonLabel={isEditing ? "Update" : "Add"}
           onSubmit={confirmHandler}
           onCancel={cancelHandler}
           defaultValues={selectedLead}
@@ -188,7 +192,7 @@ function ManageLead({ route, navigation }) {
           defaultSource={defaultSource}
         />
       </ScrollView>
-      {isEditing && (selectedLead && selectedLead.is_uploaded) == 'false' && (
+      {isEditing && (selectedLead && selectedLead.is_uploaded) == "false" && (
         <View style={styles.deleteContainer}>
           <IconButton
             icon="trash"
@@ -214,7 +218,7 @@ const styles = StyleSheet.create({
     paddingTop: 8,
     borderTopWidth: 2,
     borderTopColor: GlobalStyles.colors.primary200,
-    alignItems: 'center',
+    alignItems: "center",
   },
   button: {
     minWidth: 120,

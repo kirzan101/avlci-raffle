@@ -1,11 +1,11 @@
-import { useContext, useEffect, useState } from 'react';
-import { LeadsContext } from '../store/leads-context';
-import { UploadLeadsContext } from '../store/upload-leads-context';
+import { useContext, useEffect, useState } from "react";
+import { LeadsContext } from "../store/leads-context";
+import { UploadLeadsContext } from "../store/upload-leads-context";
 import {
   leadsFetch,
   unUploadedleadsFetch,
   uploadLead,
-} from '../database/leadsData';
+} from "../database/leadsData";
 import {
   StyleSheet,
   Text,
@@ -14,33 +14,37 @@ import {
   Pressable,
   Alert,
   TouchableOpacity,
-} from 'react-native';
-import Button from '../components/UI/Button';
-import { storeBulkLead, getLead, fetchLead } from '../util/http';
-import ConfirmationModal from '../components/UI/ConfirmationModal';
-import NetInfo from '@react-native-community/netinfo';
-import { GlobalStyles } from '../constants/styles';
-import { name, version } from '../package.json';
-import SpinningIcon from '../components/UI/SpinningIcon';
+} from "react-native";
+import Button from "../components/UI/Button";
+import { storeBulkLead, getLead, fetchLead } from "../util/http";
+import ConfirmationModal from "../components/UI/ConfirmationModal";
+import NetInfo from "@react-native-community/netinfo";
+import { GlobalStyles } from "../constants/styles";
+import { name, version } from "../package.json";
+import SpinningIcon from "../components/UI/SpinningIcon";
 
 function UploadLeads() {
   const uploadLeadsCtx = useContext(UploadLeadsContext);
   const leadsCtx = useContext(LeadsContext);
   const [isConnected, setIsConnected] = useState(false);
 
-  useEffect(() => {
-    async function getLeads() {
-      const leads = await unUploadedleadsFetch();
-      uploadLeadsCtx.setLeads(leads);
-    }
+  async function getLeads() {
+    const leads = await unUploadedleadsFetch();
+    uploadLeadsCtx.setLeads(leads);
+  }
 
+  useEffect(() => {
     const unsubscribe = NetInfo.addEventListener((state) => {
       setIsConnected(state.isConnected);
     });
 
     getLeads();
-    unsubscribe();
+
+    return () => {
+      unsubscribe();
+    };
   }, []);
+
   const [modalVisible, setModalVisible] = useState(false);
   const [btnStatus, setBtnStatus] = useState(false);
 
@@ -60,19 +64,29 @@ function UploadLeads() {
       const leads = await unUploadedleadsFetch();
       const result = await storeBulkLead(leads);
 
-      setModalVisible(false);
-
       if (result.status == 200) {
         //upload leads
-        await uploadLead();
+        const result = await uploadLead();
+        console.log("upload result", result);
+
+        if (!result || result.rowsAffected === 0) {
+          Alert.alert("Notice:", "No leads uploaded!", [
+            {
+              text: "OK",
+              onPress: () => setModalVisible(false),
+            },
+          ]);
+
+          return;
+        }
 
         // update all leads context
         const updatedLeads = await leadsFetch();
         leadsCtx.setLeads(updatedLeads);
 
-        Alert.alert('Notice:', 'Successfully uploaded!', [
+        Alert.alert("Notice:", "Successfully uploaded!", [
           {
-            text: 'OK',
+            text: "OK",
             onPress: () => {
               setBtnStatus(false);
               setModalVisible(false);
@@ -80,9 +94,10 @@ function UploadLeads() {
           },
         ]);
       } else {
-        Alert.alert('Notice:', 'Upload error!', [
+        setModalVisible(false);
+        Alert.alert("Notice:", "Upload error!", [
           {
-            text: 'OK',
+            text: "OK",
             onPress: () => setModalVisible(false),
           },
         ]);
@@ -91,7 +106,7 @@ function UploadLeads() {
   }
 
   const unuploadedLeadCount = leadsCtx.leads.filter(
-    (lead) => lead.is_uploaded == 'false'
+    (lead) => !lead.is_uploaded || lead.is_uploaded == "false",
   ).length;
 
   return (
@@ -106,12 +121,12 @@ function UploadLeads() {
           openModal={modalVisible}
           closeModal={closeModalHandle}
           confirmModal={confirmModalHandle}
-          message={'Upload all the leads?'}
+          message={"Upload all the leads?"}
           btnStatus={btnStatus}
         />
         <Image
           style={styles.image}
-          source={require('../assets/images/undraw_upload.png')}
+          source={require("../assets/images/undraw_upload.png")}
         />
         <Text style={styles.infoText}>
           Unuploaded Leads: {unuploadedLeadCount}
@@ -123,7 +138,7 @@ function UploadLeads() {
             // disabled={unuploadedLeadCount == 0 ? true : false}
             disabled={btnStatus}
           >
-            {btnStatus ? <SpinningIcon /> : 'Upload'}
+            {btnStatus ? <SpinningIcon /> : "Upload"}
           </Button>
         )}
         {/* <Button style={styles.button} onPress={uploadLeadsHandler}>
@@ -150,20 +165,20 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 24,
-    backgroundColor: 'white',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "white",
+    justifyContent: "center",
+    alignItems: "center",
   },
   infoText: {
     fontSize: 20,
-    fontWeight: 'bold',
-    textAlign: 'center',
+    fontWeight: "bold",
+    textAlign: "center",
     marginTop: 20,
   },
   infoSmallText: {
     fontSize: 12,
-    fontWeight: 'bold',
-    textAlign: 'center',
+    fontWeight: "bold",
+    textAlign: "center",
     marginTop: 20,
   },
   image: {
@@ -179,34 +194,40 @@ const styles = StyleSheet.create({
   },
   connectionStatusOnline: {
     backgroundColor: GlobalStyles.colors.primary400,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    color: 'white',
+    fontWeight: "bold",
+    textAlign: "center",
+    color: "white",
   },
   connectionStatusOffline: {
     backgroundColor: GlobalStyles.colors.error500,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    color: 'white',
+    fontWeight: "bold",
+    textAlign: "center",
+    color: "white",
   },
   versionText: {
     backgroundColor: GlobalStyles.colors.primary200,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    color: 'white',
+    fontWeight: "bold",
+    textAlign: "center",
+    color: "white",
   },
   buttonDisabled: {
     minWidth: 120,
     marginHorizontal: 8,
     marginTop: 20,
     marginBottom: 50,
-    backgroundColor: '#A9A9A9',
+    backgroundColor: "#A9A9A9",
     padding: 10,
     borderRadius: 5,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   buttonTextDisabled: {
-    color: '#DDD',
+    color: "#DDD",
+  },
+  refreshButton: {
+    minWidth: 100,
+    marginHorizontal: 8,
+    marginTop: 1,
+    marginBottom: 1,
   },
 });
