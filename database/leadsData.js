@@ -74,7 +74,7 @@ export async function unUploadedleadsFetch() {
     // "SELECT * FROM leads WHERE is_uploaded = 'false'",
     await db.transactionAsync(async (tx) => {
       const results = await tx.executeSqlAsync(
-        "SELECT * FROM leads WHERE is_uploaded != 'true'",
+        "SELECT * FROM leads WHERE is_uploaded = 'false' OR is_uploaded = '' OR is_uploaded IS NULL OR is_uploaded = 'null'",
         [],
       );
 
@@ -272,6 +272,34 @@ export async function uploadLead() {
   });
 
   return result;
+}
+
+export async function uploadLeadByIds(ids) {
+  if (!ids?.length) return null;
+
+  const placeholders = ids.map(() => "?").join(", ");
+  let updateResult;
+
+  await db.transactionAsync(async (tx) => {
+    updateResult = await tx.executeSqlAsync(
+      `UPDATE leads SET is_uploaded = 'true' WHERE id IN (${placeholders})`,
+      ids,
+    );
+  });
+
+  return updateResult;
+}
+
+export async function uploadAllLeads() {
+  let updateResult;
+
+  const result = await db.transactionAsync(async (tx) => {
+    updateResult = await tx.executeSqlAsync(
+      "UPDATE leads SET is_uploaded = 'true' WHERE is_uploaded = 'false' OR is_uploaded = '' OR is_uploaded IS NULL OR is_uploaded = 'null'",
+    );
+  });
+
+  return updateResult;
 }
 
 export async function dropTable() {

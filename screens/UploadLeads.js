@@ -5,6 +5,8 @@ import {
   leadsFetch,
   unUploadedleadsFetch,
   uploadLead,
+  uploadLeadByIds,
+  uploadAllLeads,
 } from "../database/leadsData";
 import {
   StyleSheet,
@@ -62,18 +64,37 @@ function UploadLeads() {
     setBtnStatus(true);
     if (callback) {
       const leads = await unUploadedleadsFetch();
+
+      if (leads.length == 0) {
+        Alert.alert("Notice:", "No leads to upload!", [
+          {
+            text: "OK",
+            onPress: () => {
+              setBtnStatus(false);
+              setModalVisible(false);
+            },
+          },
+        ]);
+        return;
+      }
+
       const result = await storeBulkLead(leads);
+      console.log("result response UploadLeadss", result, leads);
 
       if (result.status == 200) {
         //upload leads
-        const result = await uploadLead();
-        console.log("upload result", result);
+        // const leadIds = leads.map((lead) => lead.id);
+        // const result = await uploadLeadByIds(leadIds);
+        const result = await uploadAllLeads();
 
         if (!result || result.rowsAffected === 0) {
           Alert.alert("Notice:", "No leads uploaded!", [
             {
               text: "OK",
-              onPress: () => setModalVisible(false),
+              onPress: () => {
+                setBtnStatus(false);
+                setModalVisible(false);
+              },
             },
           ]);
 
@@ -98,7 +119,10 @@ function UploadLeads() {
         Alert.alert("Notice:", "Upload error!", [
           {
             text: "OK",
-            onPress: () => setModalVisible(false),
+            onPress: () => {
+              setBtnStatus(false);
+              setModalVisible(false);
+            },
           },
         ]);
       }
